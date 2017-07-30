@@ -1,0 +1,11 @@
+version: '3.3'
+ 
+services:
+  client:
+      build: .
+  nginx:
+    build: ./.nginx
+    ports:
+      - "80:80"
+    links:
+      - client

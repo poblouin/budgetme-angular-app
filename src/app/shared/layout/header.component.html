@@ -1,0 +1,45 @@
+<nav class="navbar navbar-light navbar-toggleable-sm bg-faded justify-content-center">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a href="#" class="navbar-brand d-flex w-50 mr-auto">BudgetMe</a>
+    <div class="navbar-collapse collapse" id="collapsingNavbar3">
+        <ul class="navbar-nav mx-auto w-100 justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/">
+              Home
+            </a>
+          </li>
+        </ul>
+        <ul *showAuthed="false"
+        class="nav navbar-nav ml-auto w-100 justify-content-end">
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/login"
+              routerLinkActive="active">
+              Sign in
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/register"
+              routerLinkActive="active">
+              Sign up
+            </a>
+          </li>
+        </ul>
+        <ul *showAuthed="true"
+        class="nav navbar-nav ml-auto w-100 justify-content-end">
+          <li class="nav-item">
+            <a class="nav-link"
+              routerLink="/settings"
+              routerLinkActive="active">
+              <i class="ion-gear-a"></i>
+              &nbsp;{{ currentUser.username}}
+            </a>
+          </li>
+        </ul>
+    </div>
+</nav>
