@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Errors, UserService } from '../shared';
+import { UserService } from '../shared';
 
 @Component({
   selector: 'auth-page',
@@ -11,7 +11,6 @@ import { Errors, UserService } from '../shared';
 export class AuthComponent implements OnInit {
   authType: String = '';
   title: String = '';
-  errors: Errors = new Errors();
   isSubmitting = false;
   authForm: FormGroup;
 
@@ -39,7 +38,6 @@ export class AuthComponent implements OnInit {
 
   submitForm() {
     this.isSubmitting = true;
-    this.errors = new Errors();
 
     const credentials = this.authForm.value;
     if (this.authType === 'login') {
@@ -47,7 +45,6 @@ export class AuthComponent implements OnInit {
         .subscribe(
           data => this.router.navigateByUrl('/'),
           err => {
-            this.errors = err;
             this.isSubmitting = false;
           }
         );
@@ -57,7 +54,6 @@ export class AuthComponent implements OnInit {
         .subscribe(
           data => this.router.navigateByUrl('/'),
           err => {
-            this.errors = err;
             this.isSubmitting = false;
           }
         );

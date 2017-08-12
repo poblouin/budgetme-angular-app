@@ -32,36 +32,33 @@ export class ApiService {
 
   get(path: string, params: URLSearchParams = new URLSearchParams()): Observable<any> {
     return this.http.get(`${environment.api_url}${path}`, { headers: this.setHeaders(), search: params })
-    .catch(this.formatErrors)
-    .map((res: Response) => res.json());
+      .map((res: Response) => res.json())
+      .publishLast()
+      .refCount()
+      .catch(this.formatErrors);
   }
 
   put(path: string, body: Object = {}): Observable<any> {
-    return this.http.put(
-      `${environment.api_url}${path}`,
-      JSON.stringify(body),
-      { headers: this.setHeaders() }
-    )
-    .catch(this.formatErrors)
-    .map((res: Response) => res.json());
+    return this.http.put(`${environment.api_url}${path}`, JSON.stringify(body), { headers: this.setHeaders() })
+      .map((res: Response) => res.json())
+      .publishLast()
+      .refCount()
+      .catch(this.formatErrors);
   }
 
   post(path: string, body: Object = {}): Observable<any> {
-    return this.http.post(
-      `${environment.api_url}${path}`,
-      JSON.stringify(body),
-      { headers: this.setHeaders() }
-    )
-    .catch(this.formatErrors)
-    .map((res: Response) => res.json());
+    return this.http.post(`${environment.api_url}${path}`, JSON.stringify(body), { headers: this.setHeaders() })
+      .map((res: Response) => res.json())
+      .publishLast()
+      .refCount()
+      .catch(this.formatErrors);
   }
 
   delete(path): Observable<any> {
-    return this.http.delete(
-      `${environment.api_url}${path}`,
-      { headers: this.setHeaders() }
-    )
-    .catch(this.formatErrors)
-    .map((res: Response) => res.json());
+    return this.http.delete(`${environment.api_url}${path}`, { headers: this.setHeaders() })
+      .map((res: Response) => res.json())
+      .publishLast()
+      .refCount()
+      .catch(this.formatErrors);
   }
 }

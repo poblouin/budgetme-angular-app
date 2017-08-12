@@ -25,6 +25,31 @@ export class UserService {
     private jwtService: JwtService
   ) {}
 
+  private setUser(user: User) {
+    this.currentUserSubject.next(user);
+    this.isAuthenticatedSubject.next(true);
+  }
+
+  private obtainToken(credentials: Object): Observable<Boolean> {
+    return this.apiService.post('/obtain-token', credentials)
+      .map(
+        data => {
+          this.jwtService.saveToken(data.token);
+          return true;
+        }
+      );
+  }
+
+  getCurrentUser(): User {
+    return this.currentUserSubject.value;
+  }
+
+  removeUser() {
+    this.jwtService.destroyToken();
+    this.currentUserSubject.next(new User());
+    this.isAuthenticatedSubject.next(false);
+  }
+
   populate() {
     if (this.jwtService.getToken()) {
       this.apiService.get('/user')
@@ -37,59 +62,40 @@ export class UserService {
     }
   }
 
-  login(credentials): Observable<User> {
-    return this.apiService.get('/user')
-    .map(
+  login(credentials: Object): Observable<User> {
+    return this.obtainToken(credentials)
+      .flatMap(
+        res => {
+          return this.apiService.get('/user')
+          .map(
+            data => {
+              this.setUser(data.user);
+              return data;
+            },
+            err => {
+              this.removeUser();
+            });
+      });
+  }
+
+  register(credentials: Object): Observable<User> {
+    const obs = this.apiService.post('/users', {user: credentials})
+    obs.subscribe(
       data => {
         this.setUser(data.user);
-        return data;
+        this.obtainToken(credentials)
       }
     );
-  }
-
-  register(credentials): Observable<User> {
-    return this.apiService.post('/users', {user: credentials})
-      .map(
-        data => {
-          this.setUser(data.user);
-          this.obtainToken(credentials);
-          return data;
-        }
-      );
-  }
-
-  obtainToken(credentials): Observable<any> {
-    return this.apiService.post('/token-auth', {credentials})
-      .map(
-        data => {
-          this.jwtService.saveToken(data.token);
-          return data;
-        }
-      );
+    return obs;
   }
 
   update(user): Observable<User> {
-    return this.apiService
-    .put('/user', { user })
-    .map(data => {
-      this.currentUserSubject.next(data.user);
-      return data.user;
-    });
-  }
-
-  setUser(user: User) {
-    this.currentUserSubject.next(user);
-    this.isAuthenticatedSubject.next(true);
-  }
-
-  removeUser() {
-    this.jwtService.destroyToken();
-    this.currentUserSubject.next(new User());
-    this.isAuthenticatedSubject.next(false);
-  }
-
-  getCurrentUser(): User {
-    return this.currentUserSubject.value;
+    return this.apiService.put('/user', { user })
+      .map(data => {
+        this.currentUserSubject.next(data.user);
+        return data.user;
+      }
+    );
   }
 
 }
