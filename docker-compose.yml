@@ -2,14 +2,14 @@ version: '3.3'
  
 services:
   client:
-      build: .
+      build: ./.docker/node
       ports:
         - '4200'
         - '49153:49153'
       volumes:
         - .:/usr/src/app/
   nginx:
-    build: ./.nginx
+    build: ./.docker/nginx
     ports:
       - "80:80"
     links:
