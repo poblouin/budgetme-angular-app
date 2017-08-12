@@ -1,4 +1,4 @@
-# BudgetmeAngularApp
+# Budgetme Web Client
 
 Angular 4 BudgetMe Web App.
 
