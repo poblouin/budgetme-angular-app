@@ -19,26 +19,11 @@ export class UserService {
   public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
-  constructor (
+  constructor(
     private apiService: ApiService,
     private http: Http,
     private jwtService: JwtService
-  ) {}
-
-  private setUser(user: User) {
-    this.currentUserSubject.next(user);
-    this.isAuthenticatedSubject.next(true);
-  }
-
-  private obtainToken(credentials: Object): Observable<Boolean> {
-    return this.apiService.post('/obtain-token', credentials)
-      .map(
-        data => {
-          this.jwtService.saveToken(data.token);
-          return true;
-        }
-      );
-  }
+  ) { }
 
   getCurrentUser(): User {
     return this.currentUserSubject.value;
@@ -54,8 +39,8 @@ export class UserService {
     if (this.jwtService.getToken()) {
       this.apiService.get('/user')
         .subscribe(
-          data => this.setUser(data.user),
-          err => this.removeUser()
+        data => this.setUser(data.user),
+        err => this.removeUser()
         );
     } else {
       this.removeUser();
@@ -67,7 +52,7 @@ export class UserService {
       .flatMap(
         res => {
           return this.apiService.get('/user')
-          .map(
+            .map(
             data => {
               this.setUser(data.user);
               return data;
@@ -75,18 +60,18 @@ export class UserService {
             err => {
               this.removeUser();
             });
-      });
+        });
   }
 
   register(credentials: Object): Observable<User> {
-    const obs = this.apiService.post('/users', {user: credentials})
-    obs.subscribe(
-      data => {
-        this.setUser(data.user);
-        this.obtainToken(credentials)
-      }
-    );
-    return obs;
+    return this.apiService.post('/users', { user: credentials })
+      .map(
+        data => {
+          this.setUser(data.user);
+          this.obtainToken(credentials)
+          return data;
+        }
+      );
   }
 
   update(user): Observable<User> {
@@ -95,7 +80,24 @@ export class UserService {
         this.currentUserSubject.next(data.user);
         return data.user;
       }
-    );
+      );
+  }
+
+  private setUser(user: User) {
+    this.currentUserSubject.next(user);
+    this.isAuthenticatedSubject.next(true);
+  }
+
+  private obtainToken(credentials: Object): Observable<Boolean> {
+    const obs = this.apiService.post('/obtain-token', credentials)
+    obs
+      .subscribe(
+        data => {
+          this.jwtService.saveToken(data.token);
+          return true;
+        }
+      );
+    return obs;
   }
 
 }
