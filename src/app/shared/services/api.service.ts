@@ -68,7 +68,6 @@ export class ApiService {
     let token = this.jwtService.getToken();
     if (this.jwtService.getToken() !== undefined && isNotRefresh) {
       if (this.jwtService.isTokenAlmostExpired()) {
-        console.log('calling refresh')
         const obs = this.refreshToken(token)
           .subscribe(
             res => token = this.jwtService.getToken()

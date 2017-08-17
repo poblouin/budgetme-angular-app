@@ -13,7 +13,6 @@ export class JwtService {
   }
 
   saveToken(token: String) {
-    console.log('saving token')
     window.localStorage['jwtToken'] = token;
   }
 
@@ -28,7 +27,6 @@ export class JwtService {
       const exp = decoded['exp'];
       const ms = Date.now();
       const seconds = Math.floor(ms / 1000);
-      console.log(exp - seconds)
       return (exp - seconds) < 20;
     }
   }
