@@ -60,7 +60,8 @@ export class UserService {
             err => {
               this.removeUser();
             });
-        });
+        }
+        );
   }
 
   register(credentials: Object): Observable<User> {
@@ -89,15 +90,13 @@ export class UserService {
   }
 
   private obtainToken(credentials: Object): Observable<Boolean> {
-    const obs = this.apiService.post('/obtain-token', credentials)
-    obs
-      .subscribe(
+    return this.apiService.post('/obtain-token', credentials)
+      .map(
         data => {
           this.jwtService.saveToken(data.token);
           return true;
         }
       );
-    return obs;
   }
 
 }

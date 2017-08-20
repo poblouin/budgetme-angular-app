@@ -5,19 +5,17 @@ import { Observable, Subscription } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { ToastrService } from 'ngx-toastr';
-
 import { environment } from '../../../environments/environment';
 import { JwtService } from './jwt.service';
 
 
 @Injectable()
 export class ApiService {
+
   constructor(
     private http: Http,
     private jwtService: JwtService,
-    private toastrService: ToastrService,
-    private router: Router,
+    private router: Router
   ) { }
 
   get(path: string, params?: URLSearchParams): Observable<any> {
@@ -56,7 +54,14 @@ export class ApiService {
   }
 
   private formatErrors(error: any): Observable<any> {
-    return Observable.throw(error.json());
+    error = error.json();
+    let errStr = 'Unexpected error occured'
+    try {
+      errStr = error.error[0];
+    } catch (TypeError) {
+      errStr = error.errors[0];
+    }
+    return Observable.throw(errStr);
   }
 
   private setHeaders(isNotRefresh = true): Headers {

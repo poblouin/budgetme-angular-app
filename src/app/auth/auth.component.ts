@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../shared';
 
 @Component({
   selector: 'auth-page',
-  templateUrl: './auth.component.html'
+  templateUrl: './auth.component.html',
+  styleUrls: [
+    './auth.component.css'
+  ]
 })
 export class AuthComponent implements OnInit {
   authType: String = '';
@@ -18,7 +22,8 @@ export class AuthComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastrService: ToastrService,
   ) {
     this.authForm = this.fb.group({
       'email': ['', Validators.required],
@@ -46,8 +51,9 @@ export class AuthComponent implements OnInit {
           data => this.router.navigateByUrl('/'),
           err => {
             this.isSubmitting = false;
+            this.showError(err);
           }
-        );
+        )
     } else {
       this.userService
         .register(credentials)
@@ -55,9 +61,14 @@ export class AuthComponent implements OnInit {
           data => this.router.navigateByUrl('/'),
           err => {
             this.isSubmitting = false;
+            this.showError(err);
           }
         );
     }
+  }
+
+  private showError(err: any): void {
+    this.toastrService.error(err, 'Oh no!');
   }
 
 }
