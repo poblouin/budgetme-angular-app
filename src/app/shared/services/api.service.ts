@@ -78,8 +78,8 @@ export class ApiService {
             res => token = this.jwtService.getToken()
           );
       }
+      headers['Authorization'] = `Token ${token}`;
     }
-    headers['Authorization'] = `Token ${token}`;
     return new Headers(headers);
   }
 
