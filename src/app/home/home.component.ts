@@ -5,8 +5,7 @@ import { UserService } from '../shared';
 
 @Component({
   selector: 'home-page',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
   private isAuthenticated: boolean;
