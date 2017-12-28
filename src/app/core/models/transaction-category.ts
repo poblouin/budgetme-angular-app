@@ -1,3 +1,4 @@
 export class TransactionCategory {
-    name: String
+    id: number;
+    name: string;
 }

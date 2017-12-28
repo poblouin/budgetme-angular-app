@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
+import { BudgetService, ErrorService } from './index';
 
 
 @NgModule({
-    imports: [ 
-        
-     ],
-    declarations: [ 
+    imports: [
 
-     ],
-    bootstrap:    [ 
+    ],
+    providers: [
+        BudgetService,
+        ErrorService
+    ],
+    declarations: [
 
-     ]
+    ]
 })
 export class CoreModule { }

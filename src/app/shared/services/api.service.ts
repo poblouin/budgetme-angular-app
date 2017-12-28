@@ -20,42 +20,38 @@ export class ApiService {
 
   get(path: string, params?: URLSearchParams): Observable<any> {
     if (params === undefined) {
-      params = new URLSearchParams()
+      params = new URLSearchParams();
     }
     return this.http.get(`${environment.api_url}${path}`, { headers: this.setHeaders(), search: params })
       .map((res: Response) => res.json())
-      .publishLast()
-      .refCount()
+      .shareReplay()
       .catch(this.formatErrors);
   }
 
   put(path: string, body: Object = {}): Observable<any> {
     return this.http.put(`${environment.api_url}${path}`, JSON.stringify(body), { headers: this.setHeaders() })
       .map((res: Response) => res.json())
-      .publishLast()
-      .refCount()
+      .shareReplay()
       .catch(this.formatErrors);
   }
 
   post(path: string, body: Object = {}): Observable<any> {
     return this.http.post(`${environment.api_url}${path}`, JSON.stringify(body), { headers: this.setHeaders(path !== '/refresh-token') })
       .map((res: Response) => res.json())
-      .publishLast()
-      .refCount()
+      .shareReplay()
       .catch(this.formatErrors);
   }
 
   delete(path): Observable<any> {
     return this.http.delete(`${environment.api_url}${path}`, { headers: this.setHeaders() })
       .map((res: Response) => res.json())
-      .publishLast()
-      .refCount()
+      .shareReplay()
       .catch(this.formatErrors);
   }
 
   private formatErrors(error: any): Observable<any> {
     error = error.json();
-    let errStr = 'Unexpected error occured'
+    let errStr = 'Unexpected error occured';
     try {
       errStr = error.error[0];
     } catch (TypeError) {
