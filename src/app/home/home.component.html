@@ -1,15 +1,10 @@
 <div class="home-page">
-  <div class="banner">
-    <div class="container" *showAuthed="true">
-      <ng-container *ngIf="budgets && budgets.length > 0; else elseTemplate">
-        <p>You have {{budgets.length}} budget(s).</p>
-      </ng-container>
-      <ng-template #elseTemplate>
-        <p>You currently have no budgets, please create at least one.</p>
-      </ng-template>
-    </div>
-    <div class="container" *showAuthed="false">
-      <p>Welcome to BudgetMe, please sign in or sign up.</p>
-    </div>
+  <div class="content" *showAuthed="true">
+    <ng-container *ngIf="budgets && budgets.length > 0; else elseTemplate">
+      <dash-heading></dash-heading>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <p>You currently have no budgets, please create at least one.</p>
+    </ng-template>
   </div>
 </div>

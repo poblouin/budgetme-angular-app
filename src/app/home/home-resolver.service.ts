@@ -9,6 +9,14 @@ export class HomeResolver implements Resolve<boolean> {
   constructor(private router: Router, private userService: UserService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.userService.isAuthenticated.take(1);
+    const obs = this.userService.isAuthenticated.take(1);
+    obs.subscribe(
+      isAuth => {
+        if (!isAuth) {
+          this.router.navigate(['/login']);
+        }
+      }
+    );
+    return obs;
   }
 }

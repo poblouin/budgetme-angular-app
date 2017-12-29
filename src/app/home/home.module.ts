@@ -1,9 +1,9 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { HomeComponent } from './home.component';
 import { HomeResolver } from './home-resolver.service';
 import { SharedModule } from '../shared';
+import { HomeComponent, DashHeadingComponent } from './index';
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -21,7 +21,8 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     SharedModule
   ],
   declarations: [
-    HomeComponent
+    HomeComponent,
+    DashHeadingComponent
   ],
   providers: [
     HomeResolver

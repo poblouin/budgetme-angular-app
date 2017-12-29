@@ -5,10 +5,7 @@ import { UserService } from '../services';
 
 @Component({
   selector: 'layout-header',
-  templateUrl: './header.component.html',
-  styleUrls: [
-    './header.component.css'
-  ]
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent implements OnInit {
   currentUser: User;
@@ -22,7 +19,7 @@ export class HeaderComponent implements OnInit {
       (userData) => {
         this.currentUser = userData;
       }
-    )
+    );
   }
 
 }

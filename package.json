@@ -13,17 +13,19 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^5.1.2",
+    "@angular/cdk": "^5.0.2",
     "@angular/common": "^5.1.2",
     "@angular/compiler": "^5.1.2",
     "@angular/core": "^5.1.2",
     "@angular/forms": "^5.1.2",
     "@angular/http": "^5.1.2",
+    "@angular/material": "^5.0.2",
     "@angular/platform-browser": "^5.1.2",
     "@angular/platform-browser-dynamic": "^5.1.2",
     "@angular/platform-server": "^5.1.2",
     "@angular/router": "^5.1.2",
     "@types/jwt-decode": "^2.2.1",
-    "bootstrap": "^4.0.0-beta.2",
+    "bootstrap": "~4.0.0-beta.2",
     "core-js": "^2.5.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
@@ -32,10 +34,10 @@
     "popper.js": "^1.13.0",
     "rxjs": "^5.5.6",
     "tether": "^1.4.0",
-    "zone.js": "^0.8.18"
+    "zone.js": "^0.8.19"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.2",
+    "@angular/cli": "^1.6.3",
     "@angular/compiler-cli": "^5.1.2",
     "@angular/language-service": "^4.4.6",
     "@types/jasmine": "2.5.45",
