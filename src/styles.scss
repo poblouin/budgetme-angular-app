@@ -1,7 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "scss/theme.scss";
 
 // Navbar
+nav.bg-primary {
+    background-color: $primary!important;
+}
 .nav-link {
   cursor:pointer;
 }
