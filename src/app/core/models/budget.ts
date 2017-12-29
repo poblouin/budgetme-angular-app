@@ -1,5 +1,11 @@
 export class Budget {
     id: number;
     name: string;
-    weeklyAmount: number;
+    weekly_amount: number;
+
+    constructor(json: any) {
+        this.id = json.id;
+        this.name = json.name;
+        this.weekly_amount = Number(json.weekly_amount);
+    }
 }

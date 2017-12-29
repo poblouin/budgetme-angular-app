@@ -13,6 +13,7 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     private budgetSub: ISubscription;
 
     public budgets: Array<Budget>;
+    public weeklyTotal: number;
 
     constructor(
         private budgetService: BudgetService
@@ -21,11 +22,21 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.budgetSub = this.budgetService.budgets
             .subscribe(
-            budgets => this.budgets = budgets
-            );
+            budgets => {
+                this.budgets = budgets;
+                this.calculateTotal();
+            });
     }
 
     ngOnDestroy(): void {
         this.budgetSub.unsubscribe();
+    }
+
+    private calculateTotal(): void {
+        let total = 0;
+        this.budgets.forEach(budget => {
+            total += budget.weekly_amount;
+        });
+        this.weeklyTotal = total;
     }
 }

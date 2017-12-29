@@ -21,7 +21,13 @@ export class BudgetService {
     getBudgets(): Observable<Array<Budget>> {
         const obs = this.apiService.get(this.API_PATH);
         obs.subscribe(
-            data => this._budgetSubject.next(data.budgets),
+            data => {
+                const arr = new Array<Budget>();
+                data.budgets.forEach(element => {
+                    arr.push(new Budget(element));
+                });
+                this._budgetSubject.next(arr);
+            },
             err => this.errorService.showError(err)
         );
         return obs;
