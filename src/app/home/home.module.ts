@@ -2,10 +2,18 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material/tabs';
 
-import { HomeResolver } from './home-resolver.service';
 import { SharedModule } from '../shared';
-import { HomeComponent, DashHeadingComponent } from './index';
+import {
+  HomeResolver,
+  HomeComponent,
+  DashHeadingComponent,
+  DashTabsComponent,
+  DashDetailedComponent,
+  DashSummaryComponent
+} from './index';
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
   {
@@ -21,14 +29,19 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
   imports: [
     homeRouting,
     SharedModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInputModule,
+    MatTabsModule
   ],
   declarations: [
     HomeComponent,
-    DashHeadingComponent
+    DashHeadingComponent,
+    DashTabsComponent,
+    DashDetailedComponent,
+    DashSummaryComponent
   ],
   providers: [
     HomeResolver
   ]
 })
-export class HomeModule {}
+export class HomeModule { }

@@ -1,6 +1,15 @@
-<mat-form-field>
-    <mat-select placeholder="Budget Period" [(ngModel)]="selectedPeriod" (ngModelChange)="onChangeSelectedPeriod($event)">
+<div class="period-select row justify-content-between">
+  <div class="col-sm m-3">
+    <mat-form-field>
+      <mat-select placeholder="Budget Period" [(ngModel)]="selectedPeriod" (ngModelChange)="onChangeSelectedPeriod($event)">
         <mat-option *ngFor="let period of periods" [value]="period">{{ period }}</mat-option>
-    </mat-select>
-</mat-form-field>
-<p>Your budget for the period {{ periodStart }} to {{ periodEnd }} is {{ budgetTotal }} $</p>
+      </mat-select>
+      <mat-hint>{{ periodStart }} to {{ periodEnd }}</mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="col-sm m-3 text-left">
+    <mat-form-field class="amount">
+      <input matInput placeholder="Budget Amount" readonly [value]="budgetTotalFormatted">
+    </mat-form-field>
+  </div>
+</div>

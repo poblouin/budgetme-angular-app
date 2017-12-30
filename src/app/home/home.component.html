@@ -2,6 +2,7 @@
   <div class="content" *showAuthed="true">
     <ng-container *ngIf="budgets && budgets.length > 0; else elseTemplate">
       <dash-heading></dash-heading>
+      <dash-tabs></dash-tabs>
     </ng-container>
     <ng-template #elseTemplate>
       <p>You currently have no budgets, please create at least one.</p>

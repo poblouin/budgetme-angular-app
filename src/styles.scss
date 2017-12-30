@@ -16,9 +16,18 @@ nav.bg-primary {
 
 // Home
 .home-page {
-  .content {
-    p {
-      font-size: 20px
+  .period-select {
+    .mat-form-field-infix {
+      width: 250px;
+    }
+    .mat-form-field-subscript-wrapper {
+      font-size: 90%;
+      padding: 5px;
+    }
+    @media (min-width: 992px) {
+      .text-left {
+        text-align: right!important;
+      }
     }
   }
 }

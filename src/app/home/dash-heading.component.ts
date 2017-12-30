@@ -21,6 +21,7 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     ];
     public budgets: Array<Budget>;
     public budgetTotal: number;
+    public budgetTotalFormatted: string;
     public selectedPeriod: string;
     public periodStart: string;
     public periodEnd: string;
@@ -55,6 +56,7 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
             total += budget.weekly_amount;
         });
         this.budgetTotal = total;
+        this.budgetTotalFormatted = `${total} $`;
     }
 
     private setDefaultSelectedPeriod(): void {
