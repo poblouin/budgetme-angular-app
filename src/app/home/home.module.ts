@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { SharedModule } from '../shared';
 import {
@@ -31,7 +32,8 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     SharedModule,
     MatSelectModule,
     MatInputModule,
-    MatTabsModule
+    MatTabsModule,
+    ChartsModule
   ],
   declarations: [
     HomeComponent,

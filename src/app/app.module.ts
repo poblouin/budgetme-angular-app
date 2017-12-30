@@ -30,12 +30,14 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([]);
     BrowserModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+
+    // BudgetMe Modules
+    rootRouting,
     AuthModule,
     HomeModule,
-    rootRouting,
     SharedModule,
     SettingsModule,
-    CoreModule
+    CoreModule,
   ],
 
   providers: [
