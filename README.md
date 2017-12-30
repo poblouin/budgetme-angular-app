@@ -1,4 +1,4 @@
-# Budgetme Web Client
+# BudgetMe Web Client
 
 Angular 5 BudgetMe Web App.
 

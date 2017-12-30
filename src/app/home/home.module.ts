@@ -11,7 +11,6 @@ import {
   HomeResolver,
   HomeComponent,
   DashHeadingComponent,
-  DashTabsComponent,
   DashDetailedComponent,
   DashSummaryComponent
 } from './index';
@@ -38,7 +37,6 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
   declarations: [
     HomeComponent,
     DashHeadingComponent,
-    DashTabsComponent,
     DashDetailedComponent,
     DashSummaryComponent
   ],
