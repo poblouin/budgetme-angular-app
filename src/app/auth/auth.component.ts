@@ -48,21 +48,21 @@ export class AuthComponent implements OnInit {
     if (this.authType === 'login') {
       this.userService.login(credentials)
         .subscribe(
-          data => this.router.navigateByUrl('/'),
-          err => {
-            this.isSubmitting = false;
-            this.showError(err);
-          }
-        )
+        data => this.router.navigateByUrl('/'),
+        err => {
+          this.isSubmitting = false;
+          this.showError(err);
+        }
+        );
     } else {
       this.userService
         .register(credentials)
         .subscribe(
-          data => this.router.navigateByUrl('/'),
-          err => {
-            this.isSubmitting = false;
-            this.showError(err);
-          }
+        data => this.router.navigateByUrl('/'),
+        err => {
+          this.isSubmitting = false;
+          this.showError(err);
+        }
         );
     }
   }

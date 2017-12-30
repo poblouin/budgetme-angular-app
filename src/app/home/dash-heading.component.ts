@@ -3,9 +3,12 @@ import { ISubscription } from 'rxjs/Subscription';
 
 import * as moment from 'moment';
 
-import { Constant } from '../shared/constants';
+import { BudgetPeriod } from './models/budget-period';
+import { Period, PeriodEnum } from './types';
+import { DashService } from './dash.service';
 import { Budget } from '../core/models/budget';
 import { BudgetService } from '../core/services/budget.service';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -16,27 +19,28 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     private budgetSub: ISubscription;
 
     public periods = [
-        'Weekly',
-        // 'Montly'
+        PeriodEnum.weekly,
+        PeriodEnum.monthly
     ];
     public budgets: Array<Budget>;
     public budgetTotal: number;
     public budgetTotalFormatted: string;
-    public selectedPeriod: string;
-    public periodStart: string;
-    public periodEnd: string;
+    public selectedPeriod: Period;
+    public budgetPeriod: BudgetPeriod;
 
     constructor(
+        private dashService: DashService,
         private budgetService: BudgetService
     ) { }
 
     ngOnInit(): void {
-        this.setDefaultSelectedPeriod();
+        this.selectedPeriod = this.dashService.getSelectedPeriod();
+        this.budgetPeriod = this.dashService.getBudgetPeriod();
         this.budgetSub = this.budgetService.budgets
             .subscribe(
             budgets => {
                 this.budgets = budgets;
-                this.onChangeSelectedPeriod();
+                this.calculateTotal();
             });
     }
 
@@ -46,29 +50,29 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
 
     onChangeSelectedPeriod(newValue?: string) {
         this.calculateTotal();
-        this.setPeriodDates();
+        this.dashService.setBudgetPeriod(this.selectedPeriod)
+            .subscribe(
+            budgetPeriod => this.budgetPeriod = budgetPeriod
+            );
     }
 
-    // TODO: Calculate Montly
     private calculateTotal(): void {
         let total = 0;
-        this.budgets.forEach(budget => {
-            total += budget.weekly_amount;
-        });
+
+        if (this.selectedPeriod === PeriodEnum.weekly) {
+            this.budgets.forEach(budget => {
+                total += budget.weekly_amount;
+            });
+        } else if (this.selectedPeriod === PeriodEnum.monthly) {
+            const daysInMonth = moment().daysInMonth();
+            this.budgets.forEach(budget => {
+                total += ((budget.weekly_amount / 7) * daysInMonth);
+            });
+            total = _.round(total, 2);
+        }
+
         this.budgetTotal = total;
         this.budgetTotalFormatted = `${total} $`;
-    }
-
-    private setDefaultSelectedPeriod(): void {
-        this.selectedPeriod = this.periods[0];
-    }
-
-    private setPeriodDates(): void {
-        const now = moment();
-        if (this.selectedPeriod === 'Weekly') {
-            this.periodStart = now.startOf('isoWeek').format(Constant.DATE_FORMAT);
-            this.periodEnd = now.endOf('isoWeek').format(Constant.DATE_FORMAT);
-        }
     }
 
 }

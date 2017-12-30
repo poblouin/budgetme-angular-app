@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       (authenticated) => {
         this.isAuthenticated = authenticated;
         if (this.isAuthenticated) {
+          // TODO: Init elsewhere?
           this.budgetService.getBudgets().subscribe().unsubscribe();
         }
       }

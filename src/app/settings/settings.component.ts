@@ -34,6 +34,7 @@ export class SettingsComponent implements OnInit {
   logout() {
     this.userService.removeUser();
     this.router.navigateByUrl('/');
+    window.location.reload();
   }
 
   submitForm() {

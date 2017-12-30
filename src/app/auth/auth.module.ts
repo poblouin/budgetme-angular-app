@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { AuthComponent } from './auth.component';
 import { NoAuthGuard } from './no-auth-guard.service';
-import { SharedModule } from '../shared';
+import { SharedModule } from '../shared/shared.module';
 
 const authRouting: ModuleWithProviders = RouterModule.forChild([
   {

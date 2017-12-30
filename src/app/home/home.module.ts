@@ -6,13 +6,14 @@ import { MatInputModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 
-import { SharedModule } from '../shared';
+import { SharedModule } from '../shared/shared.module';
 import {
   HomeResolver,
   HomeComponent,
   DashHeadingComponent,
   DashDetailedComponent,
-  DashSummaryComponent
+  DashSummaryComponent,
+  DashService
 } from './index';
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
@@ -41,7 +42,8 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     DashSummaryComponent
   ],
   providers: [
-    HomeResolver
+    HomeResolver,
+    DashService
   ]
 })
 export class HomeModule { }

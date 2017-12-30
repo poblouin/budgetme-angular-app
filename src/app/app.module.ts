@@ -9,16 +9,20 @@ import { AuthModule } from './auth/auth.module';
 import { HomeModule } from './home/home.module';
 import { SettingsModule } from './settings/settings.module';
 import { CoreModule } from 'app/core/core.module';
+import { SharedModule } from './shared/shared.module';
 import {
   ApiService,
   AuthGuard,
   HeaderComponent,
   JwtService,
-  SharedModule,
-  UserService
+  UserService,
+  NotFoundComponent
 } from './shared';
 
-const rootRouting: ModuleWithProviders = RouterModule.forRoot([]);
+const rootRouting: ModuleWithProviders = RouterModule.forRoot([
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '/404' }
+]);
 
 @NgModule({
   declarations: [
