@@ -42,5 +42,10 @@ nav.bg-primary {
     }
     .dash-summary {
         padding: 20px;
+        .negative {
+            .mat-form-field-flex {
+                color: $warn;
+            }
+        }
     }
 }

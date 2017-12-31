@@ -9,7 +9,7 @@
         <input matInput placeholder="Budget Spent" readonly [value]="budgetSpentFormatted">
       </mat-form-field>
     </div>
-    <div class="col-sm m-3 text-left">
+    <div class="col-sm m-3 text-left" [class.negative]="isRemainingNegative()">
       <mat-form-field>
         <input matInput placeholder="Budget Remaining" readonly [value]="budgetRemainingFormatted">
       </mat-form-field>

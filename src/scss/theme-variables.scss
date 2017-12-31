@@ -2,7 +2,7 @@
 
 $app-primary: mat-palette($mat-blue);
 $app-accent: mat-palette($mat-deep-orange);
-$app-warn : mat-palette($mat-pink);
+$app-warn : mat-palette($mat-red);
 
 $primary: mat-color($app-primary, 800);
 $accent: mat-color($app-accent);

@@ -2,9 +2,10 @@ import { Transaction } from '../core/models/transaction';
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import * as moment from 'moment';
 
 import { Constant } from '../shared/constants';
-import { Period } from './types';
+import { Period, PeriodEnum } from './types';
 import { BudgetPeriod } from 'app/home/models/budget-period';
 import { Observable } from 'rxjs/Observable';
 import { BudgetService } from 'app/core';
@@ -38,11 +39,13 @@ export class DashService {
     ];
     private _budgetPeriodSubject = new BehaviorSubject<BudgetPeriod>(new BudgetPeriod(Constant.DEFAULT_PERIOD));
     private _selectedPeriodSubject = new BehaviorSubject<Period>(Constant.DEFAULT_PERIOD);
+    private _budgetTotal = new BehaviorSubject<number>(0);
     private _summaryTransactionsSubject = new BehaviorSubject<Map<string, number>>(new Map());
     private budgets: Array<Budget>;
 
     public readonly budgetPeriod = this._budgetPeriodSubject.asObservable();
     public readonly selectedPeriod = this._selectedPeriodSubject.asObservable().distinctUntilChanged();
+    public readonly budgetTotal = this._budgetTotal.asObservable().distinctUntilChanged();
     public readonly summaryTransactions = this._summaryTransactionsSubject.asObservable();
 
     constructor(
@@ -54,6 +57,7 @@ export class DashService {
             budgets => {
                 this.budgets = budgets;
                 this.getSummaryTransactions();
+                this.calculateBudgetTotal();
             }
             );
     }
@@ -65,6 +69,7 @@ export class DashService {
     setBudgetPeriod(period: Period): Observable<BudgetPeriod> {
         const bp = new BudgetPeriod(period);
         this._budgetPeriodSubject.next(bp);
+        this.setSelectedPeriod(period);
         return Observable.of(bp);
     }
 
@@ -74,6 +79,7 @@ export class DashService {
 
     setSelectedPeriod(newPeriod: Period): void {
         this._selectedPeriodSubject.next(newPeriod);
+        this.calculateBudgetTotal();
     }
 
     getSummaryTransactions(): void {
@@ -104,6 +110,26 @@ export class DashService {
 
     getChartColors(): Array<any> {
         return [{ backgroundColor: _.shuffle(this.backgroundColor) }];
+    }
+
+
+    private calculateBudgetTotal(): void {
+        const period = this._selectedPeriodSubject.value;
+        let total = 0;
+
+        if (period === PeriodEnum.weekly) {
+            this.budgets.forEach(budget => {
+                total += budget.weekly_amount;
+            });
+        } else if (period === PeriodEnum.monthly) {
+            const daysInMonth = moment().daysInMonth();
+            this.budgets.forEach(budget => {
+                total += ((budget.weekly_amount / 7) * daysInMonth);
+            });
+            total = _.round(total, 2);
+        }
+
+        this._budgetTotal.next(total);
     }
 
     private calculateTotalTransactions(transactions: Array<Transaction>): number {
