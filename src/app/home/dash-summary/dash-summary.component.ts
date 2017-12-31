@@ -79,6 +79,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.summaryTotalSub.unsubscribe();
+        this.budgetTotalSub.unsubscribe();
     }
 
     isRemainingNegative(): boolean {
