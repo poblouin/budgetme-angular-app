@@ -29,6 +29,7 @@
     "@types/moment": "^2.13.0",
     "bootstrap": "~4.0.0-beta.2",
     "chart.js": "^2.7.1",
+    "chart.piecelabel.js": "^0.9.0",
     "core-js": "^2.5.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",

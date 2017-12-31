@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
 
 import { UserService } from '../shared';
-import { BudgetService } from '../core/services/budget.service';
 import { Budget } from '../core/models/budget';
+import { BudgetService, TransactionCategoryService } from '../core/index';
 
 @Component({
   selector: 'home-page',
@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private userService: UserService,
-    private budgetService: BudgetService
+    private budgetService: BudgetService,
+    private transactionCategoryService: TransactionCategoryService
   ) { }
 
   ngOnInit() {
@@ -28,8 +29,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       (authenticated) => {
         this.isAuthenticated = authenticated;
         if (this.isAuthenticated) {
-          // TODO: Init elsewhere?
           this.budgetService.getBudgets().subscribe().unsubscribe();
+          // TODO: Init elsewhere?
+          this.transactionCategoryService.getTransactionCategories();
         }
       }
     );

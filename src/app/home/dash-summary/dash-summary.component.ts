@@ -1,25 +1,76 @@
-import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ISubscription } from 'rxjs/Subscription';
+import { BaseChartDirective } from 'ng2-charts';
+import 'chart.piecelabel.js';
+
+import { DashService } from 'app/home/dash.service';
+import { Budget } from '../../core/models/budget';
+
 
 @Component({
     selector: 'dash-summary',
     templateUrl: './dash-summary.component.html'
 })
-export class DashSummaryComponent implements OnInit {
-    // Doughnut
-    public doughnutChartLabels: string[] = ['Download Sales', 'In-Store Sales', 'Mail-Order Sales'];
-    public doughnutChartData: number[] = [350, 450, 100];
-    public doughnutChartType: string = 'doughnut';
+export class DashSummaryComponent implements OnInit, OnDestroy {
+    @ViewChild(BaseChartDirective) private _chart;
+    private summaryTotalSub: ISubscription;
 
-    constructor() { }
+    public chartBudgetNames = new Array<string>();
+    public chartBudgetTotal = new Array<string>();
+    public chartOptions = {
+        pieceLabel: {
+            render: function (args) {
+                return '$' + args.value;
+            },
+            fontColor: '#000',
+            position: 'outside'
+        },
+        legend: {
+            display: true,
+            position: 'right',
+        }
+    };
+    // TODO: Generate this considering the number of budget or limit number of budget. See DashService
+    public chartColor: Array<any>;
+    public budgetSpentFormatted: string;
+    public budgetRemainingFormatted: string;
 
-    ngOnInit() { }
-
-    // events
-    public chartClicked(e: any): void {
-        console.log(e);
+    constructor(
+        private dashService: DashService,
+    ) {
+        this.chartColor = this.dashService.getChartColors();
     }
 
-    public chartHovered(e: any): void {
-        console.log(e);
+    ngOnInit(): void {
+        this.summaryTotalSub = this.dashService.summaryTransactions
+        .subscribe(
+        data => {
+            const budgetNames = new Array<string>();
+            const budgetAmount = new Array<string>();
+            data.forEach((amount, name) => {
+                if (amount === 0) {
+                    budgetNames.push(name);
+                } else {
+                    budgetNames.unshift(name);
+                    budgetAmount.unshift(amount.toFixed(2));
+                }
+            });
+            this.chartBudgetNames = budgetNames;
+            this.chartBudgetTotal = budgetAmount;
+            this.forceChartRefresh();
+        }
+        );
     }
+
+    ngOnDestroy(): void {
+        this.summaryTotalSub.unsubscribe();
+    }
+
+    private forceChartRefresh() {
+        setTimeout(() => {
+            this._chart.refresh();
+        }, 10);
+    }
+
 }

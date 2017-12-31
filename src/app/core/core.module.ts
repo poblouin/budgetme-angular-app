@@ -1,5 +1,10 @@
 import { NgModule } from '@angular/core';
-import { BudgetService, ErrorService } from './index';
+import {
+    BudgetService,
+    ErrorService,
+    TransactionCategoryService,
+    TransactionService
+} from './index';
 
 
 @NgModule({
@@ -8,7 +13,9 @@ import { BudgetService, ErrorService } from './index';
     ],
     providers: [
         BudgetService,
-        ErrorService
+        ErrorService,
+        TransactionCategoryService,
+        TransactionService
     ],
     declarations: [
 

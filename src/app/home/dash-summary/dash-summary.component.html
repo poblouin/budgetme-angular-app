@@ -1,6 +1,18 @@
 <div class="dash-summary">
-  <div style="display: block">
-    <canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" (chartHover)="chartHovered($event)"
-      (chartClick)="chartClicked($event)"></canvas>
+  <div class="row" style="display: block">
+    <canvas baseChart [data]="chartBudgetTotal" [labels]="chartBudgetNames" [chartType]="'doughnut'" [colors]="chartColor" [options]="chartOptions">
+    </canvas>
+  </div>
+  <div class="row">
+    <div class="col-sm m-3">
+      <mat-form-field>
+        <input matInput placeholder="Budget Spent" readonly [value]="budgetSpentFormatted">
+      </mat-form-field>
+    </div>
+    <div class="col-sm m-3 text-left">
+      <mat-form-field>
+        <input matInput placeholder="Budget Remaining" readonly [value]="budgetRemainingFormatted">
+      </mat-form-field>
+    </div>
   </div>
 </div>
