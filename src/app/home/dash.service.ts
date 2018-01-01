@@ -1,17 +1,18 @@
-import { Transaction } from '../core/models/transaction';
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 
 import { Constant } from '../shared/constants';
 import { Period, PeriodEnum } from './types';
 import { BudgetPeriod } from 'app/home/models/budget-period';
-import { Observable } from 'rxjs/Observable';
-import { BudgetService } from 'app/core';
 import { Budget } from 'app/core/models/budget';
+import { TransactionCategory } from 'app/core/models/transaction-category';
+import { Transaction } from '../core/models/transaction';
 import { ApiService } from 'app/shared';
-import * as _ from 'lodash';
+import { BudgetService, TransactionCategoryService } from 'app/core';
 
 @Injectable()
 export class DashService {
@@ -42,6 +43,7 @@ export class DashService {
     private _budgetTotal = new BehaviorSubject<number>(0);
     private _summaryTransactionsSubject = new BehaviorSubject<Map<string, number>>(new Map());
     private budgets: Array<Budget>;
+    private transactionCategories: Map<string, Array<TransactionCategory>>;
 
     public readonly budgetPeriod = this._budgetPeriodSubject.asObservable();
     public readonly selectedPeriod = this._selectedPeriodSubject.asObservable().distinctUntilChanged();
@@ -50,7 +52,8 @@ export class DashService {
 
     constructor(
         private apiService: ApiService,
-        private budgetService: BudgetService
+        private budgetService: BudgetService,
+        private transactionCatService: TransactionCategoryService
     ) {
         this.budgetService.budgets
             .subscribe(
@@ -59,6 +62,14 @@ export class DashService {
                 this.getSummaryTransactions();
                 this.calculateBudgetTotal();
             }
+            );
+        this.transactionCatService.transactionCategories
+            .subscribe(
+                tranCats => {
+                    this.transactionCategories = tranCats;
+                    this.getSummaryTransactions();
+                    this.calculateBudgetTotal();
+                }
             );
     }
 
@@ -84,7 +95,7 @@ export class DashService {
 
     getSummaryTransactions(): void {
         const sources = [];
-        const budgetNames = [];
+        const keys = [];
 
         this.budgets.forEach(e => {
             const param = new URLSearchParams();
@@ -92,7 +103,7 @@ export class DashService {
             param.set('from_date', this.getBudgetPeriod().periodStart);
             param.set('to_date', this.getBudgetPeriod().periodEnd);
             sources.push(this.apiService.get('/transaction', param));
-            budgetNames.push(e.name);
+            keys.push(this.createSummaryKey(e.name));
         });
 
         if (sources.length === 0) { return; }
@@ -102,7 +113,7 @@ export class DashService {
                 const summary = new Map<string, number>();
                 for (let i = 0; i < res.length; i++) {
                     const obj = res[i];
-                    summary.set(budgetNames[i], this.calculateTotalTransactions(obj.transactions));
+                    summary.set(keys[i], this.calculateTotalTransactions(obj.transactions));
                 }
                 this._summaryTransactionsSubject.next(summary);
             });
@@ -112,6 +123,9 @@ export class DashService {
         return [{ backgroundColor: _.shuffle(this.backgroundColor) }];
     }
 
+    getBudgetNameFromKey(key: string): string {
+        return key.split('_')[0];
+    }
 
     private calculateBudgetTotal(): void {
         const period = this._selectedPeriodSubject.value;
@@ -136,6 +150,10 @@ export class DashService {
         let total = 0;
         transactions.forEach(e => total += Number(e.amount));
         return _.round(total, 2);
+    }
+
+    private createSummaryKey(budgetName: string): string {
+        return [budgetName, this.getBudgetPeriod().periodStart, this.getBudgetPeriod().periodEnd].join('_');
     }
 
 }

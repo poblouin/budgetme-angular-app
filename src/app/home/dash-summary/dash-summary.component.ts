@@ -60,11 +60,12 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
             this.budgetSpent = 0;
             const budgetNames = new Array<string>();
             const budgetAmount = new Array<string>();
-            data.forEach((amount, name) => {
+            data.forEach((amount, key) => {
+                const budgetName = this.dashService.getBudgetNameFromKey(key);
                 if (amount === 0) {
-                    budgetNames.push(name);
+                    budgetNames.push(budgetName);
                 } else {
-                    budgetNames.unshift(name);
+                    budgetNames.unshift(budgetName);
                     budgetAmount.unshift(amount.toFixed(2));
                     this.budgetSpent += amount;
                 }
