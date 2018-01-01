@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { Constant } from '../shared/constants';
 import { Period, PeriodEnum } from './types';
 import { BudgetPeriod } from 'app/home/models/budget-period';
-import { Budget } from 'app/core/models/budget';
+import { Budget, BudgetFrequencyEnum } from 'app/core/models/budget';
 import { TransactionCategory } from 'app/core/models/transaction-category';
 import { Transaction } from '../core/models/transaction';
 import { ApiService } from 'app/shared';
@@ -133,19 +133,27 @@ export class DashService {
 
         if (period === PeriodEnum.weekly) {
             this.budgets.forEach(budget => {
-                total += budget.weekly_amount;
+                if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
+                    total += budget.amount;
+                } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
+                    total += ((budget.amount * 12) / 52);
+                }
             });
         } else if (period === PeriodEnum.monthly) {
             const daysInMonth = moment().daysInMonth();
             this.budgets.forEach(budget => {
-                total += ((budget.weekly_amount / 7) * daysInMonth);
+                if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
+                    total += ((budget.amount / 7) * daysInMonth);
+                } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
+                    total += budget.amount;
+                }
             });
-            total = _.round(total, 2);
         }
 
-        this._budgetTotal.next(total);
+        this._budgetTotal.next(_.round(total, 2));
     }
 
+    // TODO: Transaction in monthly budget -> week.
     private calculateTotalTransactions(transactions: Array<Transaction>): number {
         let total = 0;
         transactions.forEach(e => total += Number(e.amount));

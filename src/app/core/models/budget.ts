@@ -1,11 +1,20 @@
+export enum BudgetFrequencyEnum {
+    WEEKLY = 'Weekly',
+    MONTHLY = 'Monthly'
+}
+
+export type BudgetFrequency = BudgetFrequencyEnum.WEEKLY | BudgetFrequencyEnum.MONTHLY;
+
 export class Budget {
     id: number;
     name: string;
-    weekly_amount: number;
+    amount: number;
+    budgetFrequency: BudgetFrequencyEnum;
 
     constructor(json: any) {
         this.id = json.id;
         this.name = json.name;
-        this.weekly_amount = Number(json.weekly_amount);
+        this.amount = Number(json.amount);
+        this.budgetFrequency = json.budget_frequency;
     }
 }

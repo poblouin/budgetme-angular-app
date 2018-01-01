@@ -4,7 +4,7 @@
   </button>
   <a href="#" class="navbar-brand d-flex mr-auto">BudgetMe</a>
   <div class="navbar-collapse collapse" id="collapsingNavbar3">
-    <ul class="navbar-nav mx-auto justify-content-center">
+    <ul *showAuthed="true" class="navbar-nav mx-auto justify-content-center">
       <li class="nav-item" [routerLinkActive]="['active']">
         <a class="nav-link" routerLink="/">
           Home
