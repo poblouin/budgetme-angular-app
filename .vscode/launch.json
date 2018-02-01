@@ -4,7 +4,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "runtimeExecutable": "/usr/bin/chromium",
+            "runtimeExecutable": "google-chrome-stable",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:4200",
             "webRoot": "${workspaceRoot}/src",

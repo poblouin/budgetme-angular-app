@@ -18,7 +18,7 @@ import {
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
   {
-    path: '',
+    path: 'dash',
     component: HomeComponent,
     resolve: {
       isAuthenticated: HomeResolver

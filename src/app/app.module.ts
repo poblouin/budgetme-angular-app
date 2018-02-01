@@ -20,6 +20,7 @@ import {
 } from './shared';
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
+  { path: '', redirectTo: '/dash', pathMatch: 'full' },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '/404' }
 ]);

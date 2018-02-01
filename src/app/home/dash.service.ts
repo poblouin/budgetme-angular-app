@@ -12,7 +12,7 @@ import { Budget, BudgetFrequencyEnum } from 'app/core/models/budget';
 import { TransactionCategory } from 'app/core/models/transaction-category';
 import { Transaction } from '../core/models/transaction';
 import { ApiService } from 'app/shared';
-import { BudgetService, TransactionCategoryService } from 'app/core';
+import { BudgetService, TransactionCategoryService, TransactionService, ErrorService } from 'app/core';
 
 @Injectable()
 export class DashService {
@@ -53,23 +53,40 @@ export class DashService {
     constructor(
         private apiService: ApiService,
         private budgetService: BudgetService,
-        private transactionCatService: TransactionCategoryService
+        private transactionCatService: TransactionCategoryService,
+        private transactionService: TransactionService,
+        private errorService: ErrorService
     ) {
+        let init = true;
         this.budgetService.budgets
             .subscribe(
             budgets => {
                 this.budgets = budgets;
-                this.getSummaryTransactions();
+                if (init) {
+                    this.transactionService.getTransactions(
+                        this.getBudgetNames(),
+                        this.getBudgetPeriod().periodStart,
+                        this.getBudgetPeriod().periodEnd
+                    );
+                    init = false;
+                }
+                this.calculateTotalTransactions();
                 this.calculateBudgetTotal();
             }
             );
         this.transactionCatService.transactionCategories
             .subscribe(
-                tranCats => {
-                    this.transactionCategories = tranCats;
-                    this.getSummaryTransactions();
-                    this.calculateBudgetTotal();
-                }
+            tranCats => {
+                this.transactionCategories = tranCats;
+                this.calculateTotalTransactions();
+                this.calculateBudgetTotal();
+            }
+            );
+        this.transactionService.transactions
+            .subscribe(
+            transactions => {
+                this.calculateTotalTransactions();
+            }
             );
     }
 
@@ -90,33 +107,13 @@ export class DashService {
 
     setSelectedPeriod(newPeriod: Period): void {
         this._selectedPeriodSubject.next(newPeriod);
+        this.transactionService.getTransactions(
+            this.getBudgetNames(),
+            this.getBudgetPeriod().periodStart,
+            this.getBudgetPeriod().periodEnd
+        );
         this.calculateBudgetTotal();
-    }
-
-    getSummaryTransactions(): void {
-        const sources = [];
-        const keys = [];
-
-        this.budgets.forEach(e => {
-            const param = new URLSearchParams();
-            param.set('budget_name', e.name);
-            param.set('from_date', this.getBudgetPeriod().periodStart);
-            param.set('to_date', this.getBudgetPeriod().periodEnd);
-            sources.push(this.apiService.get('/transaction', param));
-            keys.push(this.createSummaryKey(e.name));
-        });
-
-        if (sources.length === 0) { return; }
-        Observable.forkJoin(sources)
-            .subscribe(
-            (res: any) => {
-                const summary = new Map<string, number>();
-                for (let i = 0; i < res.length; i++) {
-                    const obj = res[i];
-                    summary.set(keys[i], this.calculateTotalTransactions(obj.transactions));
-                }
-                this._summaryTransactionsSubject.next(summary);
-            });
+        this.calculateTotalTransactions();
     }
 
     getChartColors(): Array<any> {
@@ -153,15 +150,37 @@ export class DashService {
         this._budgetTotal.next(_.round(total, 2));
     }
 
-    // TODO: Transaction in monthly budget -> week.
-    private calculateTotalTransactions(transactions: Array<Transaction>): number {
-        let total = 0;
-        transactions.forEach(e => total += Number(e.amount));
-        return _.round(total, 2);
+    private calculateTotalTransactions(): void {
+        const period = this._selectedPeriodSubject.value;
+        const transactionsPerBudget = this.transactionService.getTransactionsPerBudget();
+        const newSummary = new Map<string, number>();
+
+        transactionsPerBudget.forEach((transactions, budgetName) => {
+            const budget = this.budgets.find(b => b.name === budgetName);
+            if (budget === undefined) {
+                const msg = 'Unexpected error while calculating the transactions, please try again.';
+                this.errorService.showError(msg);
+                Observable.throw(new Error(msg));
+            }
+
+            const key = this.createSummaryKey(budgetName);
+            let total = 0;
+            if (period === PeriodEnum.weekly && budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
+                transactions.forEach(e => total += ((Number(e.amount)) * 12) / 52);
+            } else {
+                transactions.forEach(e => total += Number(e.amount));
+            }
+            newSummary.set(key, _.round(total, 2));
+        });
+        this._summaryTransactionsSubject.next(newSummary);
     }
 
     private createSummaryKey(budgetName: string): string {
         return [budgetName, this.getBudgetPeriod().periodStart, this.getBudgetPeriod().periodEnd].join('_');
+    }
+
+    private getBudgetNames(): Array<string> {
+        return this.budgets.map(b => b.name);
     }
 
 }

@@ -1,7 +1,13 @@
 <div class="dash-summary">
   <div class="row" style="display: block">
+      <ng-container *ngIf="chartBudgetTotal && chartBudgetTotal.length > 0; else elseTemplate">
     <canvas baseChart [data]="chartBudgetTotal" [labels]="chartBudgetNames" [chartType]="'doughnut'" [colors]="chartColor" [options]="chartOptions">
     </canvas>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <!-- Better layout or empty chart -->
+    <p>No transactions for the current period.</p>
+  </ng-template>    
   </div>
   <div class="row">
     <div class="col-sm m-3">

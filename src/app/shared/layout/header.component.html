@@ -2,26 +2,26 @@
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a href="#" class="navbar-brand d-flex mr-auto">BudgetMe</a>
+  <a href="/dash" class="navbar-brand d-flex mr-auto">BudgetMe</a>
   <div class="navbar-collapse collapse" id="collapsingNavbar3">
     <ul *showAuthed="true" class="navbar-nav mx-auto justify-content-center">
-      <li class="nav-item" [routerLinkActive]="['active']">
-        <a class="nav-link" routerLink="/">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dash" routerLinkActive="active">
           Home
         </a>
       </li>
-      <li class="nav-item" [routerLinkActive]="['active']">
-        <a class="nav-link" routerLink="/budget">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/budget" routerLinkActive="active">
           Budgets
         </a>
       </li>
-      <li class="nav-item" [routerLinkActive]="['active']">
-        <a class="nav-link" routerLink="/transaction-category">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/transaction-category" routerLinkActive="active">
           Categories
         </a>
       </li>
-      <li class="nav-item" [routerLinkActive]="['active']">
-        <a class="nav-link" routerLink="/transaction">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/transaction" routerLinkActive="active">
           Transactions
         </a>
       </li>
