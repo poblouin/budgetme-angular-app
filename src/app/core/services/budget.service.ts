@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../shared/services/api.service';
-import { ErrorService } from './error.service';
+import { BudgetMeToastrService } from './toastr.service';
 import { Budget } from '../models/budget';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class BudgetService {
 
     constructor(
         private apiService: ApiService,
-        private errorService: ErrorService
+        private budgetMeToastrService: BudgetMeToastrService
     ) { }
 
     getBudgets(): Observable<Array<Budget>> {
@@ -28,9 +28,49 @@ export class BudgetService {
                 });
                 this._budgetSubject.next(arr);
             },
-            err => this.errorService.showError(err)
+            err => this.budgetMeToastrService.showError(err)
         );
         return obs;
+    }
+
+    createBudget(saveBudget: Budget): Observable<Budget> {
+        return this.apiService.post(this.API_PATH, saveBudget).map(
+            data => {
+                const budget = new Budget(data.budget);
+                const arr = this._budgetSubject.value;
+                arr.push(budget);
+                this._budgetSubject.next(arr);
+                this.budgetMeToastrService.showSuccess('Budget created');
+                return budget;
+            }
+        );
+    }
+
+    updateBudget(updateBudget: Budget): Observable<Budget> {
+        return this.apiService.put(this.API_PATH + `/${updateBudget.id}`, updateBudget).map(
+            data => {
+                const budget = new Budget(data.budget);
+                const arr = this._budgetSubject.value;
+                const index = arr.findIndex(b => b.id === updateBudget.id);
+                arr[index] = budget;
+                this._budgetSubject.next(arr);
+                this.budgetMeToastrService.showSuccess('Budget updated');
+                return budget;
+            }
+        );
+    }
+
+    deleteBudget(deleteBudget: Budget): Observable<Budget> {
+        return this.apiService.delete(this.API_PATH + `/${deleteBudget.id}`).map(
+            data => {
+                const arr = this._budgetSubject.value;
+                const index = arr.findIndex(b => b.id === deleteBudget.id);
+                arr.splice(index, 1);
+                this._budgetSubject.next(arr);
+                this.budgetMeToastrService.showSuccess('Budget deleted');
+                return data;
+            }
+        );
     }
 
 }

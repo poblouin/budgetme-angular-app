@@ -94,7 +94,9 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     private forceChartRefresh() {
         setTimeout(() => {
-            this._chart.refresh();
+            if (this._chart !== undefined) {
+                this._chart.refresh();
+            }
         }, 10);
     }
 

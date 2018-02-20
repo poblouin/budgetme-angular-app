@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../shared/services/api.service';
-import { ErrorService } from './error.service';
+import { BudgetMeToastrService } from './toastr.service';
 import { Transaction } from 'app/core/models/transaction';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class TransactionService {
 
     constructor(
         private apiService: ApiService,
-        private errorService: ErrorService
+        private budgetMeToastrService: BudgetMeToastrService
     ) { }
 
     getTransactions(budgetNames: Array<string>, periodStart: string, periodEnd: string): void {

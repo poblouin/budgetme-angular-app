@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
 import { ApiService } from '../../shared/services/api.service';
-import { ErrorService } from './error.service';
+import { BudgetMeToastrService } from './toastr.service';
 import { TransactionCategory } from 'app/core/models/transaction-category';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class TransactionCategoryService {
 
     constructor(
         private apiService: ApiService,
-        private errorService: ErrorService
+        private budgetMeToastrService: BudgetMeToastrService
     ) { }
 
     getTransactionCategories(): void {
@@ -34,7 +34,7 @@ export class TransactionCategoryService {
                 });
                 this._transactionCatSubject.next(newM);
             },
-            err => this.errorService.showError(err)
+            err => this.budgetMeToastrService.showError(err)
         );
     }
 

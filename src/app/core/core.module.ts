@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
     BudgetService,
-    ErrorService,
+    BudgetMeToastrService,
     TransactionCategoryService,
     TransactionService
 } from './index';
@@ -13,7 +13,7 @@ import {
     ],
     providers: [
         BudgetService,
-        ErrorService,
+        BudgetMeToastrService,
         TransactionCategoryService,
         TransactionService
     ],

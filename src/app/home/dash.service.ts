@@ -12,7 +12,7 @@ import { Budget, BudgetFrequencyEnum } from 'app/core/models/budget';
 import { TransactionCategory } from 'app/core/models/transaction-category';
 import { Transaction } from '../core/models/transaction';
 import { ApiService } from 'app/shared';
-import { BudgetService, TransactionCategoryService, TransactionService, ErrorService } from 'app/core';
+import { BudgetService, TransactionCategoryService, TransactionService, BudgetMeToastrService } from 'app/core';
 
 @Injectable()
 export class DashService {
@@ -55,7 +55,7 @@ export class DashService {
         private budgetService: BudgetService,
         private transactionCatService: TransactionCategoryService,
         private transactionService: TransactionService,
-        private errorService: ErrorService
+        private budgetMeToastrService: BudgetMeToastrService
     ) {
         let init = true;
         this.budgetService.budgets
@@ -159,7 +159,7 @@ export class DashService {
             const budget = this.budgets.find(b => b.name === budgetName);
             if (budget === undefined) {
                 const msg = 'Unexpected error while calculating the transactions, please try again.';
-                this.errorService.showError(msg);
+                this.budgetMeToastrService.showError(msg);
                 Observable.throw(new Error(msg));
             }
 

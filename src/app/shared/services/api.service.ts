@@ -50,13 +50,16 @@ export class ApiService {
   }
 
   private formatErrors(error: any): Observable<any> {
-    error = error.json();
-    let errStr = 'Unexpected error occured';
-    try {
-      errStr = error.error[0];
-    } catch (TypeError) {
-      errStr = error.errors[0];
-    }
+    // TODO: Quick dirty fix.
+    
+    // error = error.json();
+    let errStr = error._body;
+    // let errStr = 'Unexpected error occured';
+    // try {
+    //   errStr = error.error[0];
+    // } catch (TypeError) {
+    //   errStr = error.errors[0];
+    // }
     return Observable.throw(errStr);
   }
 

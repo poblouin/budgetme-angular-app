@@ -10,6 +10,7 @@ import { HomeModule } from './home/home.module';
 import { SettingsModule } from './settings/settings.module';
 import { CoreModule } from 'app/core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { BudgetModule } from './budget/budget.module';
 import {
   ApiService,
   AuthGuard,
@@ -43,6 +44,7 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     SharedModule,
     SettingsModule,
     CoreModule,
+    BudgetModule
   ],
 
   providers: [

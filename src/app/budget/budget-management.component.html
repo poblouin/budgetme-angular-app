@@ -1,0 +1,38 @@
+<div class="budget-management">
+  <div class="select">
+    <mat-form-field>
+      <mat-select [(value)]="selectedBudget" (selectionChange)="revert()" placeholder="Select or create a budget">
+        <mat-option default value="">New Budget</mat-option>
+        <mat-option *ngFor="let budget of budgets" [value]="budget">{{ budget.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form">
+    <form [formGroup]="budgetForm">
+      <div class="form-group">
+        <label class="center-block">Frequency:
+          <select class="form-control" formControlName="frequency">
+            <option *ngFor="let key of budgetFrequenciesKeys" [value]="budgetFrequencies[key]">{{ budgetFrequencies[key] }}</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="center-block">Name:
+          <input class="form-control" formControlName="name">
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="center-block">Amount:
+          <input class="form-control" formControlName="amount">
+        </label>
+      </div>
+      <div class="form-controls">
+        <button type="button" (click)="onSubmit()" [disabled]="budgetForm.pristine" class="btn btn-success space-right">Save</button>
+        <button type="button" (click)="revert()" [disabled]="budgetForm.pristine" class="btn btn-danger">Reset</button>
+        <button type="button" (click)="deleteBudget()" [disabled]="!selectedBudget" class="btn btn-danger">Delete</button>
+      </div>
+
+    </form>
+  </div>
+</div>
