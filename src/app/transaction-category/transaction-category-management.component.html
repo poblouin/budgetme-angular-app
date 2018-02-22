@@ -1,0 +1,33 @@
+<div class="transaction-category-management">
+  <div class="select">
+    <mat-form-field>
+      <mat-select [(value)]="selectedTransactionCategory" (selectionChange)="revert()" placeholder="Select or create a transaction category">
+        <mat-option default value="">New Transaction Category</mat-option>
+        <mat-option *ngFor="let tc of transactionCategories" [value]="tc">{{ tc.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form">
+    <form [formGroup]="transactionCategoryForm">
+      <div class="form-group">
+        <label class="center-block">Budget:
+          <select class="form-control" formControlName="budget" (change)="onChangeBudget($event.target.value)">
+            <option *ngFor="let budget of budgets" [value]="budget.name">{{ budget.name }}</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="center-block">Name:
+          <input class="form-control" formControlName="name">
+        </label>
+      </div>
+      <div class="form-controls">
+        <button type="button" (click)="onSubmit()" [disabled]="transactionCategoryForm.pristine" class="btn btn-success space-right">Save</button>
+        <button type="button" (click)="revert()" [disabled]="transactionCategoryForm.pristine" class="btn btn-danger">Reset</button>
+        <button type="button" (click)="deleteTransactionCategory()" [disabled]="!selectedTransactionCategory" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+
+  </div>
+</div>

@@ -11,6 +11,7 @@ import { SettingsModule } from './settings/settings.module';
 import { CoreModule } from 'app/core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { BudgetModule } from './budget/budget.module';
+import { TransactionCategoryModule } from './transaction-category/transaction-category.module';
 import {
   ApiService,
   AuthGuard,
@@ -36,15 +37,16 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     BrowserModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    rootRouting,
 
     // BudgetMe Modules
-    rootRouting,
     AuthModule,
     HomeModule,
     SharedModule,
     SettingsModule,
     CoreModule,
-    BudgetModule
+    BudgetModule,
+    TransactionCategoryModule
   ],
 
   providers: [

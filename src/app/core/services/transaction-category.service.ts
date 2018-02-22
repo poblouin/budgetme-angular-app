@@ -13,6 +13,7 @@ export class TransactionCategoryService {
 
     public transactionCategories = this._transactionCatSubject.asObservable();
 
+    // TODO: When budget is deleted, delete the map[budgetName]
     constructor(
         private apiService: ApiService,
         private budgetMeToastrService: BudgetMeToastrService
@@ -35,6 +36,66 @@ export class TransactionCategoryService {
                 this._transactionCatSubject.next(newM);
             },
             err => this.budgetMeToastrService.showError(err)
+        );
+    }
+
+    createTransactionCategory(saveTransactionCat: TransactionCategory): Observable<TransactionCategory> {
+        return this.apiService.post(this.API_PATH, saveTransactionCat).map(
+            data => {
+                const transactionCategory = new TransactionCategory(data.transaction_category);
+                const budgetName = transactionCategory.budget.name;
+                const transactionMap = this._transactionCatSubject.value;
+
+                if (transactionMap.has(budgetName)) {
+                    transactionMap.get(budgetName).push(transactionCategory);
+                } else {
+                    transactionMap.set(budgetName, new Array(transactionCategory));
+                }
+
+                this._transactionCatSubject.next(transactionMap);
+                this.budgetMeToastrService.showSuccess('Transaction category created');
+                return transactionCategory;
+            }
+        );
+    }
+
+    updateTransactionCategory(updateTransactionCategory: TransactionCategory, oldbudgetName: string): Observable<TransactionCategory> {
+        return this.apiService.put(this.API_PATH + `/${updateTransactionCategory.id}`, updateTransactionCategory).map(
+            data => {
+                const transactionCategory = new TransactionCategory(data.transaction_category);
+                const newBudgetName = data.transaction_category.budget.name;
+                const transactionMap = this._transactionCatSubject.value;
+
+                const index = transactionMap.get(oldbudgetName).findIndex(b => b.id === transactionCategory.id);
+                if (newBudgetName === oldbudgetName) {
+                    transactionMap[oldbudgetName][index] = transactionCategory;
+                } else {
+                    transactionMap[oldbudgetName].splice(index, 1);
+                    if (transactionMap.has(newBudgetName)) {
+                        transactionMap[newBudgetName].push(transactionCategory);
+                    } else {
+                        transactionMap.set(newBudgetName, new Array(transactionCategory));
+                    }
+                }
+
+                this._transactionCatSubject.next(transactionMap);
+                this.budgetMeToastrService.showSuccess('Transaction category updated');
+                return transactionCategory;
+            }
+        );
+    }
+
+    deleteTransactionCategory(deleteTransactionCategory: TransactionCategory): Observable<TransactionCategory> {
+        return this.apiService.delete(this.API_PATH + `/${deleteTransactionCategory.id}`).map(
+            data => {
+                const transactionMap = this._transactionCatSubject.value;
+                const index = transactionMap.get(deleteTransactionCategory.budget.name)
+                    .findIndex(b => b.id === deleteTransactionCategory.id);
+                transactionMap.get(deleteTransactionCategory.budget.name).splice(index, 1);
+                this._transactionCatSubject.next(transactionMap);
+                this.budgetMeToastrService.showSuccess('Transaction category deleted');
+                return data;
+            }
         );
     }
 
