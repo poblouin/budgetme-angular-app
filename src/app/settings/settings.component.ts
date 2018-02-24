@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit {
 
   logout() {
     this.userService.removeUser();
-    this.router.navigateByUrl('/dash');
+    this.router.navigateByUrl('/home');
     window.location.reload();
   }
 
@@ -43,7 +43,7 @@ export class SettingsComponent implements OnInit {
     this.userService
     .update(this.user)
     .subscribe(
-      updatedUser => this.router.navigateByUrl('/dash'),
+      updatedUser => this.router.navigateByUrl('/home'),
       err => {
         this.errors = err;
         this.isSubmitting = false;
