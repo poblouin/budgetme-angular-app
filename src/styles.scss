@@ -48,12 +48,17 @@ nav.bg-primary {
             }
         }
     }
+    .fab-button button {
+        margin: 10px;
+    }
 }
 
-// Budget
-.budget-management {
-    button.space-right {
-        margin-right: 30px!important;
-    }
-    
+// Global stuff
+button.space-right {
+    margin-right: 30px!important;
+}
+
+// Fix for mat-tab auto scroll bar
+.mat-tab-body-content{
+    overflow: hidden!important;
 }

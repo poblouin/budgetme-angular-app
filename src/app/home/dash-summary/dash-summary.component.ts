@@ -1,11 +1,15 @@
-import { take } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { ISubscription } from 'rxjs/Subscription';
+
 import { BaseChartDirective } from 'ng2-charts';
+import { MatDialog } from '@angular/material/dialog';
 import 'chart.piecelabel.js';
 
 import { DashService } from 'app/home/dash.service';
 import { Budget } from '../../core/models/budget';
+import { CreateTransactionDialogComponent } from './create-transaction-dialog.component';
+import { BudgetPeriod } from 'app/home/models/budget-period';
 
 
 @Component({
@@ -42,6 +46,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     constructor(
         private dashService: DashService,
+        public dialog: MatDialog
     ) {
         this.chartColor = this.dashService.getChartColors();
     }
@@ -85,6 +90,15 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     isRemainingNegative(): boolean {
         return (this.budgetTotal - this.budgetSpent) < 0;
+    }
+
+    createTransactionDialog(): void {
+        const budgetPeriod: BudgetPeriod = this.dashService.getBudgetPeriod();
+        this.dialog.open(CreateTransactionDialogComponent, {
+            width: 'auto',
+            data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
+            disableClose: true
+          });
     }
 
     private calculateBudgets(): void {

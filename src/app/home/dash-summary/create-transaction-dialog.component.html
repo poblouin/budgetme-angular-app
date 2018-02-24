@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Create new transaction</h2>
+<div mat-dialog-content>
+  <form [formGroup]="transactionForm">
+    <div class="form-group">
+      <label class="center-block">Amount:
+        <input type="number" class="form-control" formControlName="amount">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">Date:
+        <input type="date" class="form-control" formControlName="date">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">Description:
+        <input class="form-control" formControlName="description">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">Transaction Category:
+        <select class="form-control" formControlName="transactionCategory">
+          <option *ngFor="let tc of transactionCategories" [ngValue]="tc">{{ tc.name }}</option>
+        </select>
+      </label>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button type="button space-right" class="btn btn-danger" mat-dialog-close>Cancel</button>
+  <button type="button" class="btn btn-success" (click)="saveTransaction()">Save</button>
+</div>

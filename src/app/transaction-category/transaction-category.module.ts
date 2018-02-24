@@ -9,7 +9,7 @@ import { AuthGuard } from '../shared';
 import { TransactionCategoryService } from '../core';
 import { TransactionCategoryManagementComponent } from './transaction-category-management.component';
 
-const budgetRouting: ModuleWithProviders = RouterModule.forChild([
+const transactionCategoryRouting: ModuleWithProviders = RouterModule.forChild([
     {
       path: 'transaction-category',
       component: TransactionCategoryManagementComponent,
@@ -22,7 +22,7 @@ const budgetRouting: ModuleWithProviders = RouterModule.forChild([
         TransactionCategoryManagementComponent
     ],
     imports: [
-        budgetRouting,
+        transactionCategoryRouting,
         CommonModule,
         MatSelectModule,
         ReactiveFormsModule

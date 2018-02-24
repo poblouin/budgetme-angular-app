@@ -27,7 +27,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
 
     constructor(
         private budgetService: BudgetService,
-        private transactionCategorySerice: TransactionCategoryService,
+        private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService,
         private fb: FormBuilder,
     ) {
@@ -38,7 +38,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
         this.budgetSub = this.budgetService.budgets.subscribe(
             budgets => this.budgets = budgets
         );
-        this.transactionCategorySub = this.transactionCategorySerice.transactionCategories.subscribe(
+        this.transactionCategorySub = this.transactionCategoryService.transactionCategories.subscribe(
             tcs => {
                 const arr = new Array<TransactionCategory>();
                 tcs.forEach((val: Array<TransactionCategory>, key: string) => arr.push(...val));
@@ -55,7 +55,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     onSubmit(): void {
         const saveTransactionCategory = this.prepareSaveTransactionCategory();
         if (!this.selectedTransactionCategory) {
-            this.transactionCategorySerice.createTransactionCategory(saveTransactionCategory).subscribe(
+            this.transactionCategoryService.createTransactionCategory(saveTransactionCategory).subscribe(
                 tc => {
                     this.selectedTransactionCategory = tc;
                     this.revert();
@@ -64,7 +64,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
             );
         } else {
             saveTransactionCategory.id = this.selectedTransactionCategory.id;
-            this.transactionCategorySerice.updateTransactionCategory(saveTransactionCategory, this.oldBudgetName).subscribe(
+            this.transactionCategoryService.updateTransactionCategory(saveTransactionCategory, this.oldBudgetName).subscribe(
                 tc => {
                     this.selectedTransactionCategory = tc;
                     this.revert();
@@ -75,7 +75,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     }
 
     deleteTransactionCategory(): void {
-        this.transactionCategorySerice.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
+        this.transactionCategoryService.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
             budget => {
                 this.selectedBudgetName = '';
                 this.selectedTransactionCategory = undefined;

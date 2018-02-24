@@ -66,6 +66,26 @@ export class TransactionService {
         return newM;
     }
 
+    createTransaction(newTransaction: Transaction, periodStart: string, periodEnd: string): Observable<Transaction> {
+        return this.apiService.post(this.API_PATH, newTransaction).map(
+            data => {
+                const transaction = new Transaction(data.transaction);
+                const budgetName = transaction.transactionCategory.budget.name;
+                const tcName = transaction.transactionCategory.name;
+                const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
+                const newM = this._transactionSubject.value;
+                if (newM.has(key)) {
+                    newM.get(key).push(transaction);
+                } else {
+                    newM.set(key, new Array(transaction));
+                }
+                this._transactionSubject.next(newM);
+                this.budgetMeToastrService.showSuccess('Transaction created');
+                return transaction;
+            }
+        );
+    }
+
     private createKey(budgetName: string, catName: string, periodStart: string, periodEnd: string): string {
         return [budgetName, catName, periodStart, periodEnd].join('_');
     }
