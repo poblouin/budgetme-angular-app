@@ -30,10 +30,9 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.selectedPeriod = this.dashService.getSelectedPeriod();
         this.budgetPeriod = this.dashService.getBudgetPeriod();
-        this.budgetTotalSub = this.dashService.budgetTotal
-            .subscribe(
-            budgetTotal => this.budgetTotalFormatted = `${budgetTotal} $`
-            );
+        this.budgetTotalSub = this.dashService.budgetTotal.subscribe(
+            budgetTotal => this.budgetTotalFormatted = `${budgetTotal.toFixed(2)} $`
+        );
     }
 
     ngOnDestroy(): void {
@@ -41,10 +40,9 @@ export class DashHeadingComponent implements OnInit, OnDestroy {
     }
 
     onChangeSelectedPeriod(newValue?: string) {
-        this.dashService.setBudgetPeriod(this.selectedPeriod)
-            .subscribe(
+        this.dashService.setBudgetPeriod(this.selectedPeriod).subscribe(
             budgetPeriod => this.budgetPeriod = budgetPeriod
-            );
+        );
     }
 
 }
