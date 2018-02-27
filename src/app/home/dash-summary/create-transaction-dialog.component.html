@@ -19,7 +19,7 @@
     <div class="form-group">
       <label class="center-block">Transaction Category:
         <select class="form-control" formControlName="transactionCategory">
-          <option *ngFor="let tc of transactionCategories" [ngValue]="tc">{{ tc.name }}</option>
+          <option *ngFor="let tc of transactionCategories" [ngValue]="tc">{{ tc.name }} - ({{ tc.budget.name }})</option>
         </select>
       </label>
     </div>
