@@ -20,6 +20,17 @@ nav.bg-primary {
     cursor: pointer;
 }
 
+// Footer
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding-top: 20px;
+    background-color: rgba(223, 223, 223, 0.801);
+    text-align: center;
+}
+
 // Container
 .container {
     padding: 50px;

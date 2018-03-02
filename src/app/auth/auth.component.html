@@ -9,7 +9,8 @@
       <form [formGroup]="authForm" (ngSubmit)="submitForm()">
         <fieldset [disabled]="isSubmitting">
           <fieldset class="form-group">
-            <input formControlName="username" placeholder="Username" class="form-control form-control-lg" type="text" *ngIf="authType == 'register'" />
+            <input formControlName="username" placeholder="Username" class="form-control form-control-lg" type="text" *ngIf="authType == 'register'"
+            />
           </fieldset>
           <fieldset class="form-group">
             <input formControlName="email" placeholder="Email" class="form-control form-control-lg" type="text" />
@@ -25,3 +26,7 @@
     </div>
   </div>
 </div>
+<footer>
+  <p>&copy; Pierre-Olivier Blouin</p>
+  <p><a href="mailto:admin@budgetme.ca">admin@budgetme.ca</a></p>
+</footer>
