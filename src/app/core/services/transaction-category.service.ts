@@ -17,7 +17,9 @@ export class TransactionCategoryService {
     constructor(
         private apiService: ApiService,
         private budgetMeToastrService: BudgetMeToastrService
-    ) { }
+    ) {
+        this.getTransactionCategories();
+    }
 
     getTransactionCategories(): void {
         const obs = this.apiService.get(this.API_PATH);

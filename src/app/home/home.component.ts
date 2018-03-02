@@ -12,28 +12,17 @@ import { BudgetService, TransactionCategoryService } from '../core/index';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private isAuthenticated: boolean;
-  private userSub: ISubscription;
   private budgetSub: ISubscription;
 
   public budgets: Array<Budget>;
 
   constructor(
     private router: Router,
-    private userService: UserService,
     private budgetService: BudgetService,
     private transactionCategoryService: TransactionCategoryService
   ) { }
 
   ngOnInit() {
-    this.userSub = this.userService.isAuthenticated.subscribe(
-      (authenticated) => {
-        this.isAuthenticated = authenticated;
-        if (this.isAuthenticated) {
-          this.budgetService.getBudgets().subscribe().unsubscribe();
-          this.transactionCategoryService.getTransactionCategories();
-        }
-      }
-    );
     this.budgetSub = this.budgetService.budgets
       .subscribe(
         budgets => this.budgets = budgets
@@ -41,7 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userSub.unsubscribe();
     this.budgetSub.unsubscribe();
   }
 

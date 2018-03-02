@@ -59,27 +59,26 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
                     this.calculateBudgets();
                 });
 
-        this.summaryTotalSub = this.dashService.summaryTransactions
-        .subscribe(
-        data => {
-            this.budgetSpent = 0;
-            const budgetNames = new Array<string>();
-            const budgetAmount = new Array<string>();
-            data.forEach((amount, key) => {
-                const budgetName = this.dashService.getBudgetNameFromKey(key);
-                if (amount === 0) {
-                    budgetNames.push(budgetName);
-                } else {
-                    budgetNames.unshift(budgetName);
-                    budgetAmount.unshift(amount.toFixed(2));
-                    this.budgetSpent += amount;
-                }
-            });
-            this.chartBudgetNames = budgetNames;
-            this.chartBudgetTotal = budgetAmount;
-            this.forceChartRefresh();
-            this.calculateBudgets();
-        }
+        this.summaryTotalSub = this.dashService.summaryTransactions.subscribe(
+            data => {
+                this.budgetSpent = 0;
+                const budgetNames = new Array<string>();
+                const budgetAmount = new Array<string>();
+                data.forEach((amount, key) => {
+                    const budgetName = this.dashService.getBudgetNameFromKey(key);
+                    if (amount === 0) {
+                        budgetNames.push(budgetName);
+                    } else {
+                        budgetNames.unshift(budgetName);
+                        budgetAmount.unshift(amount.toFixed(2));
+                        this.budgetSpent += amount;
+                    }
+                });
+                this.chartBudgetNames = budgetNames;
+                this.chartBudgetTotal = budgetAmount;
+                this.forceChartRefresh();
+                this.calculateBudgets();
+            }
         );
     }
 
@@ -98,7 +97,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
             width: 'auto',
             data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
             disableClose: true
-          });
+        });
     }
 
     private calculateBudgets(): void {

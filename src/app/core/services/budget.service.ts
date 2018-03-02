@@ -16,7 +16,9 @@ export class BudgetService {
     constructor(
         private apiService: ApiService,
         private budgetMeToastrService: BudgetMeToastrService
-    ) { }
+    ) {
+        this.getBudgets().subscribe().unsubscribe();
+    }
 
     getBudgets(): Observable<Array<Budget>> {
         const obs = this.apiService.get(this.API_PATH);

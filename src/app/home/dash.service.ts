@@ -58,8 +58,7 @@ export class DashService {
         private budgetMeToastrService: BudgetMeToastrService
     ) {
         let init = true;
-        this.budgetService.budgets
-            .subscribe(
+        this.budgetService.budgets.subscribe(
             budgets => {
                 this.budgets = budgets;
                 if (init) {
@@ -73,21 +72,19 @@ export class DashService {
                 this.calculateTotalTransactions();
                 this.calculateBudgetTotal();
             }
-            );
-        this.transactionCatService.transactionCategories
-            .subscribe(
+        );
+        this.transactionCatService.transactionCategories.subscribe(
             tranCats => {
                 this.transactionCategories = tranCats;
                 this.calculateTotalTransactions();
                 this.calculateBudgetTotal();
             }
-            );
-        this.transactionService.transactions
-            .subscribe(
+        );
+        this.transactionService.transactions.subscribe(
             transactions => {
                 this.calculateTotalTransactions();
             }
-            );
+        );
     }
 
     getBudgetPeriod(): BudgetPeriod {
