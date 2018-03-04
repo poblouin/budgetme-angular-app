@@ -27,14 +27,14 @@
 </div>
 <ng-container *ngIf="isEdit; else elseTemplate">
   <div mat-dialog-actions>
-    <button type="button space-right" class="btn btn-danger" mat-dialog-close>Cancel</button>
-    <button type="button" class="btn btn-danger" (click)="deleteTransaction()">Delete</button>
     <button type="button" class="btn btn-success" (click)="updateTransaction()">Save</button>
+    <button type="button" class="btn btn-danger" (click)="deleteTransaction()">Delete</button>
+    <button type="button" class="btn btn-danger" mat-dialog-close>Cancel</button>
   </div>
 </ng-container>
 <ng-template #elseTemplate>
   <div mat-dialog-actions>
-    <button type="button space-right" class="btn btn-danger" mat-dialog-close>Cancel</button>
     <button type="button" class="btn btn-success" (click)="saveTransaction()">Save</button>
+    <button type="button" class="btn btn-danger" mat-dialog-close>Cancel</button>
   </div>
 </ng-template>
