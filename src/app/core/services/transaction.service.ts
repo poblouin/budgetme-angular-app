@@ -61,11 +61,12 @@ export class TransactionService {
         const newM = new Map<string, Array<Transaction>>();
         this._transactionSubject.value.forEach((transactions, key) => {
             const budgetName = this.getBudgetNameFromKey(key);
+            const transactionsCopy = new Array(...transactions);
             const arr = newM.get(budgetName);
             if (arr !== undefined) {
-                arr.push(...transactions);
+                arr.push.apply(arr, transactionsCopy);
             } else {
-                newM.set(budgetName, transactions);
+                newM.set(budgetName, transactionsCopy);
             }
         });
         return newM;

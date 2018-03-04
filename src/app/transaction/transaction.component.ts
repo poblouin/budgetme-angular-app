@@ -38,11 +38,8 @@ export class TransactionManagementComponent implements OnInit, OnDestroy {
                 transactionMap.forEach((transactions, k) => {
                     transactions.forEach(
                         t => {
-                            // TODO: Freaking weird bug.
-                            if (transactionElements.find(transaction => transaction.id === t.id) === undefined) {
-                                transactionTotal += t.amount;
-                                transactionElements.push(t);
-                            }
+                            transactionTotal += t.amount;
+                            transactionElements.push(t);
                         }
                     );
                 });
