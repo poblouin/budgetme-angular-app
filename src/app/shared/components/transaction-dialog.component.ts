@@ -20,6 +20,7 @@ export class TransactionDialogComponent implements OnInit, OnDestroy {
     private transactionCategoriesSub: ISubscription;
     private selectedTransactionCategory: TransactionCategory;
 
+    public title: string;
     public isEdit: boolean;
     public transactionForm: FormGroup;
     public transactionCategories: Array<TransactionCategory>;
@@ -33,6 +34,7 @@ export class TransactionDialogComponent implements OnInit, OnDestroy {
         private budgetMeToastrService: BudgetMeToastrService,
     ) {
         this.isEdit = 'transaction' in this.data;
+        this.title = this.isEdit ? 'Update transaction' : 'Create new transaction';
         this.createForm();
     }
 
