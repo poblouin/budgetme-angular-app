@@ -1,46 +1,46 @@
 <nav class="navbar navbar-dark bg-primary navbar-expand-sm justify-content-center fixed-top">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#collapsingNavbar3">
+  <button #navbarToggler class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
     <span class="navbar-toggler-icon"></span>
   </button>
   <a href="/home" class="navbar-brand d-flex mr-auto">BudgetMe</a>
-  <div class="navbar-collapse collapse" id="collapsingNavbar3">
+  <div class="navbar-collapse collapse" id="navbarSupportedContent">
     <ul *showAuthed="true" class="navbar-nav mx-auto justify-content-center">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/home" routerLinkActive="active">
+        <a class="nav-link" routerLink="/home" (click)="collapseNav()" routerLinkActive="active">
           Home
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/budget" routerLinkActive="active">
+        <a class="nav-link" routerLink="/budget" (click)="collapseNav()" routerLinkActive="active">
           Budgets
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/transaction-category" routerLinkActive="active">
+        <a class="nav-link" routerLink="/transaction-category" (click)="collapseNav()" routerLinkActive="active">
           Categories
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/transaction" routerLinkActive="active">
+        <a class="nav-link" routerLink="/transaction" (click)="collapseNav()" routerLinkActive="active">
           Transactions
         </a>
       </li>
     </ul>
     <ul *showAuthed="false" class="nav navbar-nav ml-auto justify-content-end">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/login" routerLinkActive="active">
+        <a class="nav-link" routerLink="/login" (click)="collapseNav()" routerLinkActive="active">
           Sign in
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/register" routerLinkActive="active">
+        <a class="nav-link" routerLink="/register" (click)="collapseNav()" routerLinkActive="active">
           Sign up
         </a>
       </li>
     </ul>
     <ul *showAuthed="true" class="nav navbar-nav ml-auto justify-content-end">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/settings" routerLinkActive="active">
+        <a class="nav-link" routerLink="/settings" (click)="collapseNav()" routerLinkActive="active">
           <i class="material-icons">settings</i>
           &nbsp;{{ currentUser.username}}
         </a>

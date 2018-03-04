@@ -1,11 +1,14 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  MatSelectModule,
+  MatInputModule,
+  MatTabsModule,
+  MatButtonModule,
+  MatIconModule,
+  MatTooltipModule
+} from '@angular/material';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { SharedModule } from '../shared/shared.module';
@@ -36,6 +39,7 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     MatTabsModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     ChartsModule
   ],
   declarations: [

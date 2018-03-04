@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { ISubscription } from 'rxjs/Subscription';
 
@@ -17,6 +17,7 @@ import { DashService } from '../../core/services';
 })
 export class DashSummaryComponent implements OnInit, OnDestroy {
     @ViewChild(BaseChartDirective) private _chart;
+    @ViewChild('fabButton') private fabButton: ElementRef;
     private summaryTotalSub: ISubscription;
     private budgetTotalSub: ISubscription;
 
@@ -92,10 +93,15 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     createTransactionDialog(): void {
         const budgetPeriod: BudgetPeriod = this.dashService.getBudgetPeriod();
-        this.dialog.open(TransactionDialogComponent, {
+        const matDialogRef = this.dialog.open(TransactionDialogComponent, {
             width: 'auto',
             data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
             disableClose: true
+        });
+        matDialogRef.afterClosed().subscribe(() => {
+            this.fabButton._elementRef.nativeElement.classList.remove('cdk-focused');
+            this.fabButton._elementRef.nativeElement.classList.remove('cdk-program-focused');
+            // this.fabButton._elementRef.nativeElement.classList.add('cdk-mouse-focused');
         });
     }
 

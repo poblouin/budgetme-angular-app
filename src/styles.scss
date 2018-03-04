@@ -100,3 +100,11 @@ button.space-right {
 .mat-dialog-actions button.btn {
     margin: 10px;
 }
+
+// Remove ugly ring for mouse event.
+body:not(.user-is-tabbing) button:focus,
+body:not(.user-is-tabbing) input:focus,
+body:not(.user-is-tabbing) select:focus,
+body:not(.user-is-tabbing) textarea:focus {
+  outline: none;
+}
