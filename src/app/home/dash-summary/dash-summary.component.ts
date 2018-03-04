@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { ISubscription } from 'rxjs/Subscription';
 
+import { MatButton } from '@angular/material';
 import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import 'chart.piecelabel.js';
@@ -17,7 +18,7 @@ import { DashService } from '../../core/services';
 })
 export class DashSummaryComponent implements OnInit, OnDestroy {
     @ViewChild(BaseChartDirective) private _chart;
-    @ViewChild('fabButton') private fabButton: ElementRef;
+    @ViewChild('fabButton') private fabButton: MatButton;
     private summaryTotalSub: ISubscription;
     private budgetTotalSub: ISubscription;
 
@@ -98,10 +99,12 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
             data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
             disableClose: true
         });
+
+        // Little hack, otherwise the button stays focused.
         matDialogRef.afterClosed().subscribe(() => {
             this.fabButton._elementRef.nativeElement.classList.remove('cdk-focused');
             this.fabButton._elementRef.nativeElement.classList.remove('cdk-program-focused');
-            // this.fabButton._elementRef.nativeElement.classList.add('cdk-mouse-focused');
+            this.fabButton._elementRef.nativeElement.classList.add('cdk-mouse-focused');
         });
     }
 
