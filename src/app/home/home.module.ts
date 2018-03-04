@@ -6,18 +6,15 @@ import { MatInputModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { SharedModule } from '../shared/shared.module';
+import { DashService } from '../core';
 import {
   HomeResolver,
   HomeComponent,
-  DashHeadingComponent,
   DashDetailedComponent,
   DashSummaryComponent,
-  CreateTransactionDialogComponent,
-  DashService
 } from './index';
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
@@ -39,22 +36,16 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     MatTabsModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule,
     ChartsModule
   ],
   declarations: [
     HomeComponent,
-    DashHeadingComponent,
     DashDetailedComponent,
-    DashSummaryComponent,
-    CreateTransactionDialogComponent
+    DashSummaryComponent
   ],
   providers: [
     HomeResolver,
     DashService
   ],
-  entryComponents: [
-    CreateTransactionDialogComponent
-  ]
 })
 export class HomeModule { }

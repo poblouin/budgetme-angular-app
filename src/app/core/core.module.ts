@@ -3,7 +3,8 @@ import {
     BudgetService,
     BudgetMeToastrService,
     TransactionCategoryService,
-    TransactionService
+    TransactionService,
+    DashService
 } from './index';
 
 
@@ -15,7 +16,8 @@ import {
         BudgetService,
         BudgetMeToastrService,
         TransactionCategoryService,
-        TransactionService
+        TransactionService,
+        DashService
     ],
     declarations: [
 

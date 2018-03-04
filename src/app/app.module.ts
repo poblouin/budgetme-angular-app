@@ -12,6 +12,7 @@ import { CoreModule } from 'app/core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { BudgetModule } from './budget/budget.module';
 import { TransactionCategoryModule } from './transaction-category/transaction-category.module';
+import { TransactionModule } from './transaction/transaction.module';
 import {
   ApiService,
   AuthGuard,
@@ -46,7 +47,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     SettingsModule,
     CoreModule,
     BudgetModule,
-    TransactionCategoryModule
+    TransactionCategoryModule,
+    TransactionModule
   ],
 
   providers: [

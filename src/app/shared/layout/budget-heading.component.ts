@@ -1,20 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ISubscription } from 'rxjs/Subscription';
 
 import * as moment from 'moment';
 
-import { BudgetPeriod } from './models/budget-period';
-import { Period, PeriodEnum } from './types';
-import { DashService } from './dash.service';
+import { PeriodEnum, Period } from '../types';
+import { BudgetPeriod } from '../models/budget-period';
+import { DashService } from '../../core/services';
 
 
 @Component({
-    selector: 'dash-heading',
-    templateUrl: './dash-heading.component.html'
+    selector: 'budget-heading',
+    templateUrl: './budget-heading.component.html'
 })
-export class DashHeadingComponent implements OnInit, OnDestroy {
+export class BudgetHeadingComponent implements OnInit, OnDestroy {
     private budgetTotalSub: ISubscription;
 
+    @Input('showAmount') public showAmount = true;
+    @Input('transactionTotalFormatted') public transactionTotalFormatted = '0.00 $';
     public periods = [
         PeriodEnum.weekly,
         PeriodEnum.monthly

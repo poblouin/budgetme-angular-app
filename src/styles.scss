@@ -39,14 +39,6 @@ footer {
 
 // Home
 .home-page {
-    .mat-form-field-infix {
-        width: 250px;
-    }
-    .mat-form-field-subscript-wrapper {
-        font-size: 90%;
-        padding: 5px;
-        font-weight: bolder;
-    }
     @media (min-width: 992px) {
         .text-left {
             text-align: right!important;
@@ -65,12 +57,42 @@ footer {
     }
 }
 
+// Transaction Management
+.transaction-management {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    .mat-table {
+        overflow: auto;
+        max-height: 500px;
+        .mat-row {
+            min-height: 65px;
+            &.hover {
+                background: #cccbcb5b;
+            }
+        }
+        .mat-header-cell.mat-sort-header-sorted {
+            color: black;
+        }
+    }
+}
+
 // Global stuff
 button.space-right {
     margin-right: 30px!important;
 }
 
+.mat-form-field-infix {
+    width: 250px!important;
+}
+
+.mat-form-field-subscript-wrapper {
+    font-size: 90%;
+    padding: 5px;
+    font-weight: bolder;
+}
+
 // Fix for mat-tab auto scroll bar
-.mat-tab-body-content{
+.mat-tab-body-content {
     overflow: hidden!important;
 }

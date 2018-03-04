@@ -7,9 +7,14 @@
       <mat-hint>{{ budgetPeriod.periodStart }} to {{ budgetPeriod.periodEnd }}</mat-hint>
     </mat-form-field>
   </div>
-  <div class="col-sm m-3 text-left">
+  <div class="col-sm m-3 text-left" *ngIf="showAmount">
     <mat-form-field class="amount">
       <input matInput placeholder="Budget Amount" readonly [value]="budgetTotalFormatted">
+    </mat-form-field>
+  </div>
+  <div class="col-sm m-3 text-left" *ngIf="!showAmount">
+    <mat-form-field class="total">
+      <input matInput placeholder="Transaction total" readonly [value]="transactionTotalFormatted">
     </mat-form-field>
   </div>
 </div>

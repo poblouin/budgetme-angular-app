@@ -6,10 +6,9 @@ import { BaseChartDirective } from 'ng2-charts';
 import { MatDialog } from '@angular/material/dialog';
 import 'chart.piecelabel.js';
 
-import { DashService } from 'app/home/dash.service';
 import { Budget } from '../../core/models/budget';
-import { CreateTransactionDialogComponent } from './create-transaction-dialog.component';
-import { BudgetPeriod } from 'app/home/models/budget-period';
+import { BudgetPeriod, TransactionDialogComponent } from 'app/shared';
+import { DashService } from '../../core/services';
 
 
 @Component({
@@ -93,7 +92,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     createTransactionDialog(): void {
         const budgetPeriod: BudgetPeriod = this.dashService.getBudgetPeriod();
-        this.dialog.open(CreateTransactionDialogComponent, {
+        this.dialog.open(TransactionDialogComponent, {
             width: 'auto',
             data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
             disableClose: true

@@ -5,14 +5,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
-import { Constant } from '../shared/constants';
-import { Period, PeriodEnum } from './types';
-import { BudgetPeriod } from 'app/home/models/budget-period';
-import { Budget, BudgetFrequencyEnum } from 'app/core/models/budget';
-import { TransactionCategory } from 'app/core/models/transaction-category';
-import { Transaction } from '../core/models/transaction';
-import { ApiService } from 'app/shared';
-import { BudgetService, TransactionCategoryService, TransactionService, BudgetMeToastrService } from 'app/core';
+import { Constant } from '../../shared/constants';
+import { Period, PeriodEnum } from '../../shared/types';
+import { Budget, BudgetFrequencyEnum } from '../models/budget';
+import { TransactionCategory } from '../models/transaction-category';
+import { BudgetService } from './budget.service';
+import { TransactionCategoryService } from './transaction-category.service';
+import { TransactionService } from './transaction.service';
+import { BudgetMeToastrService } from './toastr.service';
+import { ApiService } from '../../shared/services/api.service';
+import { BudgetPeriod } from '../../shared/models/budget-period';
+
 
 @Injectable()
 export class DashService {
@@ -110,7 +113,6 @@ export class DashService {
             this.getBudgetPeriod().periodEnd
         );
         this.calculateBudgetTotal();
-        this.calculateTotalTransactions();
     }
 
     getChartColors(): Array<any> {

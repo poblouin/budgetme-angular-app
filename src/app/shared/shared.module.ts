@@ -5,8 +5,16 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import {
+  MatSelectModule,
+  MatInputModule,
+  MatDialogModule
+} from '@angular/material';
+
+import {
   NotFoundComponent,
-  ShowAuthedDirective
+  ShowAuthedDirective,
+  BudgetHeadingComponent,
+  TransactionDialogComponent
 } from './index';
 
 @NgModule({
@@ -15,11 +23,16 @@ import {
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
-    RouterModule
+    RouterModule,
+    MatSelectModule,
+    MatInputModule,
+    MatDialogModule
   ],
   declarations: [
     ShowAuthedDirective,
-    NotFoundComponent
+    NotFoundComponent,
+    BudgetHeadingComponent,
+    TransactionDialogComponent
   ],
   exports: [
     CommonModule,
@@ -27,8 +40,15 @@ import {
     ReactiveFormsModule,
     HttpModule,
     RouterModule,
+    MatInputModule,
+    MatSelectModule,
     ShowAuthedDirective,
-    NotFoundComponent
+    NotFoundComponent,
+    BudgetHeadingComponent,
+    TransactionDialogComponent
+  ],
+  entryComponents: [
+    TransactionDialogComponent
   ]
 })
 export class SharedModule { }

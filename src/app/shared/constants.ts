@@ -1,4 +1,4 @@
-import { PeriodEnum } from '../home/types';
+import { PeriodEnum } from 'app/shared/types';
 
 export class Constant {
     public static readonly DATE_FORMAT = 'YYYY-MM-DD';
