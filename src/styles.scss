@@ -75,6 +75,7 @@ nav.bg-primary {
         .mat-row {
             min-height: 65px;
             &.hover {
+                cursor: pointer;
                 background: rgba(167, 167, 167, 0.801);
             }
         }
