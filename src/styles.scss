@@ -21,14 +21,21 @@ nav.bg-primary {
 }
 
 // Footer
-footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    padding-top: 20px;
-    background-color: rgba(223, 223, 223, 0.801);
-    text-align: center;
+.auth-page {
+    footer {
+        @media (max-width: 991px) {
+            display: none;
+        }
+        @media (min-width: 992px) {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            padding-top: 20px;
+            background-color: rgba(223, 223, 223, 0.801);
+            text-align: center;
+        }
+    }
 }
 
 // Container
@@ -106,5 +113,5 @@ body:not(.user-is-tabbing) button:focus,
 body:not(.user-is-tabbing) input:focus,
 body:not(.user-is-tabbing) select:focus,
 body:not(.user-is-tabbing) textarea:focus {
-  outline: none;
+    outline: none;
 }

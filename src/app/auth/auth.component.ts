@@ -23,7 +23,7 @@ export class AuthComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private fb: FormBuilder,
-    private toastrService: ToastrService,
+    private toastrService: ToastrService
   ) {
     this.authForm = this.fb.group({
       'email': ['', Validators.required],

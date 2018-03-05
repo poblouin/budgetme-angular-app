@@ -13,10 +13,11 @@
             />
           </fieldset>
           <fieldset class="form-group">
-            <input formControlName="email" placeholder="Email" class="form-control form-control-lg" type="text" />
+            <input id="email" formControlName="email" placeholder="Email" class="form-control form-control-lg" type="text" />
           </fieldset>
           <fieldset class="form-group">
-            <input formControlName="password" placeholder="Password" class="form-control form-control-lg" type="password" />
+            <input id="password" formControlName="password" placeholder="Password" class="form-control form-control-lg" type="password"
+            />
           </fieldset>
           <button class="btn btn-lg btn-primary pull-xs-right" [disabled]="!authForm.valid" type="submit">
             {{ title }}
@@ -25,8 +26,10 @@
       </form>
     </div>
   </div>
+  <footer>
+    <p>Made with &hearts; by Pierre-Olivier Blouin</p>
+    <p>
+      <a href="mailto:admin@budgetme.ca">admin@budgetme.ca</a>
+    </p>
+  </footer>
 </div>
-<footer>
-  <p>Made with &hearts; by Pierre-Olivier Blouin</p>
-  <p><a href="mailto:admin@budgetme.ca">admin@budgetme.ca</a></p>
-</footer>
