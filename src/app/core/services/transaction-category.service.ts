@@ -66,15 +66,16 @@ export class TransactionCategoryService {
             data => {
                 const transactionCategory = new TransactionCategory(data.transaction_category);
                 const newBudgetName = data.transaction_category.budget.name;
+                oldbudgetName = oldbudgetName !== undefined ? oldbudgetName : newBudgetName;
                 const transactionMap = this._transactionCatSubject.value;
 
                 const index = transactionMap.get(oldbudgetName).findIndex(b => b.id === transactionCategory.id);
                 if (newBudgetName === oldbudgetName) {
-                    transactionMap[oldbudgetName][index] = transactionCategory;
+                    transactionMap.get(oldbudgetName)[index] = transactionCategory;
                 } else {
-                    transactionMap[oldbudgetName].splice(index, 1);
+                    transactionMap.get(oldbudgetName).splice(index, 1);
                     if (transactionMap.has(newBudgetName)) {
-                        transactionMap[newBudgetName].push(transactionCategory);
+                        transactionMap.get(newBudgetName).push(transactionCategory);
                     } else {
                         transactionMap.set(newBudgetName, new Array(transactionCategory));
                     }

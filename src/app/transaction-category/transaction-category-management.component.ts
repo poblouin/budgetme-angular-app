@@ -19,7 +19,6 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     private budgetSub: ISubscription;
     private oldBudgetName: string;
 
-    public selectedBudgetName: string;
     public selectedTransactionCategory: TransactionCategory;
     public budgets: Array<Budget>;
     public transactionCategories: Array<TransactionCategory>;
@@ -77,7 +76,6 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     deleteTransactionCategory(): void {
         this.transactionCategoryService.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
             budget => {
-                this.selectedBudgetName = '';
                 this.selectedTransactionCategory = undefined;
                 this.revert();
             },
@@ -99,8 +97,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     }
 
     onChangeBudget(budgetName: string): void {
-        this.oldBudgetName = this.selectedBudgetName;
-        this.selectedBudgetName = budgetName;
+        this.oldBudgetName = this.selectedTransactionCategory.budget.name;
     }
 
     private createForm(): void {
