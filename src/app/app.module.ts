@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import * as Raven from 'raven-js';
 import { ToastrModule } from 'ngx-toastr';
 
+import { environment } from 'environments/environment';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { HomeModule } from './home/home.module';
@@ -24,17 +25,16 @@ import {
   NotFoundComponent
 } from './shared';
 
-// TODO: Put API key in dotenv.
-// Raven
-//   .config('')
-//   .install();
+Raven
+  .config(environment.sentry_api_url)
+  .install();
 
-// export class RavenErrorHandler implements ErrorHandler {
-//   handleError(err: any): void {
-//     Raven.captureException(err);
-//   }
-// }
-
+export class RavenErrorHandler implements ErrorHandler {
+  handleError(err: any): void {
+    Raven.captureException(err);
+  }
+}
+console.log('ENV VALUE' + environment.sentry_api_url);
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '404', component: NotFoundComponent },
@@ -69,7 +69,7 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     AuthGuard,
     JwtService,
     UserService,
-    // { provide: ErrorHandler, useClass: RavenErrorHandler }
+    { provide: ErrorHandler, useClass: RavenErrorHandler }
   ],
 
   bootstrap: [AppComponent]
