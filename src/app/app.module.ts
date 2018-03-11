@@ -34,7 +34,7 @@ export class RavenErrorHandler implements ErrorHandler {
     Raven.captureException(err);
   }
 }
-console.log('ENV VALUE' + environment.sentry_api_url);
+
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '404', component: NotFoundComponent },
