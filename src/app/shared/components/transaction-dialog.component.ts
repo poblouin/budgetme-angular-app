@@ -65,20 +65,11 @@ export class TransactionDialogComponent implements OnInit, OnDestroy {
 
     updateTransaction(): void {
         const updateTransaction = this.prepareTransaction();
-        const oldTransaction = this.data.transaction;
-        const oldTranBudgetName = oldTransaction.transactionCategory.budget.name;
-        const oldTranCatName = oldTransaction.transactionCategory.name;
-        const upTranBudgetName = updateTransaction.transaction_category.budget.name;
-        const upTranCatName = updateTransaction.transaction_category.name;
-        const oldBudgetName = oldTranBudgetName !== upTranBudgetName ? oldTranBudgetName : undefined;
-        const oldCatName = oldTranCatName !== upTranCatName ? oldTranCatName : undefined;
-
         this.transactionService.updateTransaction(
             updateTransaction,
+            this.data.transaction,
             this.data.periodStart,
-            this.data.periodEnd,
-            oldCatName,
-            oldBudgetName)
+            this.data.periodEnd)
             .subscribe(
                 data => {
                     this.dialogRef.close();

@@ -7,6 +7,7 @@ import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Transaction } from 'app/core/models/transaction';
 
+
 @Injectable()
 export class TransactionService {
     private API_PATH = '/transaction';
@@ -78,9 +79,11 @@ export class TransactionService {
                 const transaction = new Transaction(data.transaction);
                 const budgetName = transaction.transactionCategory.budget.name;
                 const tcName = transaction.transactionCategory.name;
-                const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
-                this.addTransactionToCache(key, transaction);
-                this._transactionSubject.next(this._transactionSubject.value);
+                if (!this.isOutsidePeriod(transaction.date, periodStart, periodEnd)) {
+                    const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
+                    this.addTransactionToCache(key, transaction);
+                    this._transactionSubject.next(this._transactionSubject.value);
+                }
                 this.budgetMeToastrService.showSuccess('Transaction created');
                 return transaction;
             }
@@ -89,23 +92,36 @@ export class TransactionService {
 
     updateTransaction(
         updateTransaction: Transaction,
+        oldTransaction: Transaction,
         periodStart: string,
-        periodEnd: string,
-        oldCategoryName: string,
-        oldBudgetName: string): Observable<Transaction> {
+        periodEnd: string
+    ): Observable<Transaction> {
         return this.apiService.put(`${this.API_PATH}/${updateTransaction.id}`, updateTransaction).map(
             data => {
                 const transaction = new Transaction(data.transaction);
-                const budgetName = transaction.transactionCategory.budget.name;
-                const tcName = transaction.transactionCategory.name;
-                const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
-                if (oldCategoryName || oldBudgetName) {
-                    const budgetNameOldKey = oldBudgetName ? oldBudgetName : budgetName;
-                    const catNameOldKey = oldCategoryName ? oldCategoryName : tcName;
+                const newTranBudgetName = transaction.transactionCategory.budget.name;
+                const newTranCatName = transaction.transactionCategory.name;
+                const key = this.createKey(newTranBudgetName, newTranCatName, periodStart, periodEnd);
+
+                // Check old data to remove from cache if needed.
+                const oldTranBudgetName = oldTransaction.transactionCategory.budget.name;
+                const oldTranCatName = oldTransaction.transactionCategory.name;
+                const oldTranDate = oldTransaction.date;
+                const newTranDate = transaction.date;
+                const oldBudgetName = oldTranBudgetName !== newTranBudgetName ? oldTranBudgetName : undefined;
+                const oldCategoryName = oldTranCatName !== newTranCatName ? oldTranCatName : undefined;
+                const oldDate = oldTranDate !== newTranDate ? oldTranDate : undefined;
+                const dateIsOutsidePeriod = this.isOutsidePeriod(oldDate, periodStart, periodEnd);
+
+                if (oldCategoryName || oldBudgetName || dateIsOutsidePeriod) {
+                    const budgetNameOldKey = oldBudgetName ? oldBudgetName : newTranBudgetName;
+                    const catNameOldKey = oldCategoryName ? oldCategoryName : newTranCatName;
                     const oldKey = this.createKey(budgetNameOldKey, catNameOldKey, periodStart, periodEnd);
                     this.deleteTransactionFromCache(oldKey, transaction.id);
                 }
-                this.addTransactionToCache(key, transaction);
+                if (!dateIsOutsidePeriod) {
+                    this.addTransactionToCache(key, transaction);
+                }
                 this._transactionSubject.next(this._transactionSubject.value);
                 this.budgetMeToastrService.showSuccess('Transaction updated');
                 return transaction;
@@ -116,11 +132,13 @@ export class TransactionService {
     deleteTransaction(deleteTransaction: any, periodStart: string, periodEnd: string): Observable<Transaction> {
         return this.apiService.delete(this.API_PATH + `/${deleteTransaction.id}`).map(
             data => {
-                const budgetName = deleteTransaction.transaction_category.budget.name;
-                const tcName = deleteTransaction.transaction_category.name;
-                const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
-                this.deleteTransactionFromCache(key, deleteTransaction.id);
-                this._transactionSubject.next(this._transactionSubject.value);
+                if (!this.isOutsidePeriod(deleteTransaction.date, periodStart, periodEnd)) {
+                    const budgetName = deleteTransaction.transaction_category.budget.name;
+                    const tcName = deleteTransaction.transaction_category.name;
+                    const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
+                    this.deleteTransactionFromCache(key, deleteTransaction.id);
+                    this._transactionSubject.next(this._transactionSubject.value);
+                }
                 this.budgetMeToastrService.showSuccess('Transaction deleted');
                 return data;
             }
@@ -148,6 +166,13 @@ export class TransactionService {
 
     private getBudgetNameFromKey(key: string): string {
         return key.split('_')[0];
+    }
+
+    private isOutsidePeriod(date: string, periodStart: string, periodEnd: string): boolean {
+        if (date === undefined) {
+            return false;
+        }
+        return periodStart > date || date > periodEnd;
     }
 
 }
