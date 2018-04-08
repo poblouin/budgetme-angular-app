@@ -27,6 +27,16 @@
           <input data-lpignore="true" type="number" class="form-control" formControlName="amount">
         </label>
       </div>
+      <div class="form-group">
+        <label class="center-block">Start Date:
+          <input data-lpignore="true" type="date" class="form-control" formControlName="startDate">
+        </label>
+      </div>      
+      <div class="form-group">
+        <label class="center-block">End Date:
+          <input data-lpignore="true" type="date" class="form-control" formControlName="endDate">
+        </label>
+      </div>            
       <div class="form-controls">
         <button type="button" (click)="onSubmit()" [disabled]="budgetForm.pristine" class="btn btn-success space-right">Save</button>
         <button type="button" (click)="revert()" [disabled]="budgetForm.pristine" class="btn btn-danger">Reset</button>

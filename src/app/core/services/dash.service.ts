@@ -123,25 +123,30 @@ export class DashService {
         return key.split('_')[0];
     }
 
+    // TODO: Refactor
     private calculateBudgetTotal(): void {
         const period = this._selectedPeriodSubject.value;
         let total = 0;
 
         if (period === PeriodEnum.weekly) {
             this.budgets.forEach(budget => {
-                if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
-                    total += budget.amount;
-                } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
-                    total += ((budget.amount * 12) / 52);
+                if (budget.isActiveForMonth()) {
+                    if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
+                        total += budget.amount;
+                    } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
+                        total += ((budget.amount * 12) / 52);
+                    }
                 }
             });
         } else if (period === PeriodEnum.monthly) {
             const daysInMonth = moment().daysInMonth();
             this.budgets.forEach(budget => {
-                if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
-                    total += ((budget.amount / 7) * daysInMonth);
-                } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
-                    total += budget.amount;
+                if (budget.isActiveForMonth()) {
+                    if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {
+                        total += ((budget.amount / 7) * daysInMonth);
+                    } else if (budget.budgetFrequency === BudgetFrequencyEnum.MONTHLY) {
+                        total += budget.amount;
+                    }
                 }
             });
         }

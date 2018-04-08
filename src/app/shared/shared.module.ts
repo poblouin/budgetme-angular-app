@@ -14,7 +14,9 @@ import {
   ShowAuthedDirective,
   BudgetHeadingComponent,
   TransactionDialogComponent,
-  ConfirmDialogComponent
+  ConfirmDialogComponent,
+  ActiveTransactionCategoryPipe,
+  ActiveBudgetPipe
 } from './index';
 
 @NgModule({
@@ -32,7 +34,9 @@ import {
     NotFoundComponent,
     BudgetHeadingComponent,
     TransactionDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ActiveTransactionCategoryPipe,
+    ActiveBudgetPipe
   ],
   exports: [
     CommonModule,
@@ -45,7 +49,9 @@ import {
     NotFoundComponent,
     BudgetHeadingComponent,
     TransactionDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ActiveTransactionCategoryPipe,
+    ActiveBudgetPipe
   ],
   entryComponents: [
     TransactionDialogComponent,

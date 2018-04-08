@@ -91,11 +91,15 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             frequency: '',
             name: '',
             amount: 0,
+            startDate: undefined,
+            endDate: undefined
         };
         if (this.selectedBudget) {
             values.amount = this.selectedBudget.amount;
             values.frequency = this.selectedBudget.budgetFrequency;
             values.name = this.selectedBudget.name;
+            values.startDate = this.selectedBudget.startDate;
+            values.endDate = this.selectedBudget.endDate;
         }
         this.budgetForm.reset(values);
     }
@@ -105,6 +109,8 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             frequency: '',
             name: '',
             amount: [0, Validators.min(0)],
+            startDate: undefined,
+            endDate: undefined
         });
     }
 
@@ -114,8 +120,11 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
         const saveBudget = {
             name: formModel.name,
             amount: formModel.amount,
-            budget_frequency: formModel.frequency
+            budget_frequency: formModel.frequency,
+            start_date: formModel.startDate ? formModel.startDate : null,
+            end_date: formModel.endDate ? formModel.endDate : null
         };
+
         return saveBudget;
     }
 

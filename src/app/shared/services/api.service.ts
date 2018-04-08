@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpRequest, HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import * as Raven from 'raven-js';
 import { Observable, Subscription } from 'rxjs/Rx';
@@ -42,17 +42,14 @@ export class ApiService {
             .catch(this.formatErrors);
     }
 
-    private formatErrors(error: any): Observable<any> {
-        // TODO: Quick dirty fix.
-
-        // error = error.json();
-        let errStr = error._body;
-        // let errStr = 'Unexpected error occured';
-        // try {
-        //   errStr = error.error[0];
-        // } catch (TypeError) {
-        //   errStr = error.errors[0];
-        // }
+    private formatErrors(httpError: HttpErrorResponse): Observable<any> {
+        const error = httpError.error;
+        let errStr;
+        if ('errors' in error) {
+            errStr = JSON.stringify(error.errors);
+        } else {
+            errStr = JSON.stringify(error);
+        }
         Raven.captureException(errStr);
         return Observable.throw(errStr);
     }

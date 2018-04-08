@@ -13,7 +13,7 @@
       <div class="form-group">
         <label class="center-block">Budget:
           <select class="form-control" formControlName="budget" (change)="onChangeBudget($event.target.value)">
-            <option *ngFor="let budget of budgets" [value]="budget.name">{{ budget.name }}</option>
+            <option *ngFor="let budget of budgets" [value]="budget.name">{{ budget.name }} {{ budget.isActive() ? '(Active)' : '(Inactive)' }}</option>
           </select>
         </label>
       </div>

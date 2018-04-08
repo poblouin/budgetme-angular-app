@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AuthGuard } from '../shared';
 import { TransactionCategoryService } from '../core';
 import { TransactionCategoryManagementComponent } from './transaction-category-management.component';
+import { SharedModule } from '../shared/shared.module';
 
 const transactionCategoryRouting: ModuleWithProviders = RouterModule.forChild([
     {
@@ -25,7 +26,8 @@ const transactionCategoryRouting: ModuleWithProviders = RouterModule.forChild([
         transactionCategoryRouting,
         CommonModule,
         MatSelectModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SharedModule
     ],
     exports: [],
     providers: [
