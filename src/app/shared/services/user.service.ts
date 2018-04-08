@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
+
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -21,7 +21,6 @@ export class UserService {
 
     constructor(
         private apiService: ApiService,
-        private http: Http,
         private jwtService: JwtService
     ) { }
 

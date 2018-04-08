@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import {
@@ -14,7 +13,8 @@ import {
   NotFoundComponent,
   ShowAuthedDirective,
   BudgetHeadingComponent,
-  TransactionDialogComponent
+  TransactionDialogComponent,
+  ConfirmDialogComponent
 } from './index';
 
 @NgModule({
@@ -22,7 +22,6 @@ import {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     RouterModule,
     MatSelectModule,
     MatInputModule,
@@ -32,23 +31,25 @@ import {
     ShowAuthedDirective,
     NotFoundComponent,
     BudgetHeadingComponent,
-    TransactionDialogComponent
+    TransactionDialogComponent,
+    ConfirmDialogComponent
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     RouterModule,
     MatInputModule,
     MatSelectModule,
     ShowAuthedDirective,
     NotFoundComponent,
     BudgetHeadingComponent,
-    TransactionDialogComponent
+    TransactionDialogComponent,
+    ConfirmDialogComponent
   ],
   entryComponents: [
-    TransactionDialogComponent
+    TransactionDialogComponent,
+    ConfirmDialogComponent
   ]
 })
 export class SharedModule { }

@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+
 import { ISubscription } from 'rxjs/Subscription';
 
 import { Budget } from '../core/models/budget';
 import { TransactionCategory } from '../core/models/transaction-category';
+import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.component';
 import {
     TransactionCategoryService,
     BudgetService,
@@ -29,6 +32,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
         private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService,
         private fb: FormBuilder,
+        public dialog: MatDialog
     ) {
         this.createForm();
     }
@@ -78,13 +82,26 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
     }
 
     deleteTransactionCategory(): void {
-        this.transactionCategoryService.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
-            budget => {
-                this.selectedTransactionCategory = undefined;
-                this.revert();
+        const matDialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: 'auto',
+            data: {
+                content: `When deleting this transaction category, all the transactions
+                          linked to it (if any), will be deleted as well.`
             },
-            err => this.budgetMeToastrService.showError(err)
-        );
+            disableClose: true
+        });
+
+        matDialogRef.beforeClose().subscribe(confirm => {
+            if (confirm) {
+                this.transactionCategoryService.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
+                    budget => {
+                        this.selectedTransactionCategory = undefined;
+                        this.revert();
+                    },
+                    err => this.budgetMeToastrService.showError(err)
+                );
+            }
+        });
     }
 
     revert(): void {

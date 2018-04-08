@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { MatDialog } from '@angular/material/dialog';
+
 import { Budget, BudgetFrequencyEnum } from '../core/models/budget';
 import { BudgetService, BudgetMeToastrService } from '../core';
 import { ISubscription } from 'rxjs/Subscription';
+import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.component';
 
 @Component({
     selector: 'budget-management',
@@ -22,6 +25,7 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
         private budgetService: BudgetService,
         private budgetMeToastrService: BudgetMeToastrService,
         private fb: FormBuilder,
+        public dialog: MatDialog
     ) {
         this.budgetFrequenciesKeys = Object.keys(this.budgetFrequencies);
         this.createForm();
@@ -60,13 +64,26 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
     }
 
     deleteBudget(): void {
-        this.budgetService.deleteBudget(this.selectedBudget).subscribe(
-            budget => {
-                this.selectedBudget = undefined;
-                this.revert();
+        const matDialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: 'auto',
+            data: {
+                content: `When deleting this budget, all the transaction categories
+                          and transactions linked to it (if any), will be deleted as well.`
             },
-            err => this.budgetMeToastrService.showError(err)
-        );
+            disableClose: true
+        });
+
+        matDialogRef.beforeClose().subscribe(confirm => {
+            if (confirm) {
+                this.budgetService.deleteBudget(this.selectedBudget).subscribe(
+                    budget => {
+                        this.selectedBudget = undefined;
+                        this.revert();
+                    },
+                    err => this.budgetMeToastrService.showError(err)
+                );
+            }
+        });
     }
 
     revert(): void {
