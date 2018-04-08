@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { TransactionCategory } from 'app/core/models/transaction-category';
+import { TransactionService } from './transaction.service';
 
 @Injectable()
 export class TransactionCategoryService {
@@ -16,7 +17,8 @@ export class TransactionCategoryService {
     // TODO: When budget is deleted, delete the map[budgetName]
     constructor(
         private apiService: ApiService,
-        private budgetMeToastrService: BudgetMeToastrService
+        private budgetMeToastrService: BudgetMeToastrService,
+        private transactionService: TransactionService
     ) {
         this.getTransactionCategories();
     }
@@ -61,19 +63,22 @@ export class TransactionCategoryService {
         );
     }
 
-    updateTransactionCategory(updateTransactionCategory: TransactionCategory, oldbudgetName: string): Observable<TransactionCategory> {
+    updateTransactionCategory(
+        updateTransactionCategory: TransactionCategory,
+        oldCategoryName: string,
+        oldBudgetName: string): Observable<TransactionCategory> {
         return this.apiService.put(this.API_PATH + `/${updateTransactionCategory.id}`, updateTransactionCategory).map(
             data => {
                 const transactionCategory = new TransactionCategory(data.transaction_category);
                 const newBudgetName = data.transaction_category.budget.name;
-                oldbudgetName = oldbudgetName !== undefined ? oldbudgetName : newBudgetName;
+                oldBudgetName = oldBudgetName !== undefined ? oldBudgetName : newBudgetName;
                 const transactionMap = this._transactionCatSubject.value;
 
-                const index = transactionMap.get(oldbudgetName).findIndex(b => b.id === transactionCategory.id);
-                if (newBudgetName === oldbudgetName) {
-                    transactionMap.get(oldbudgetName)[index] = transactionCategory;
+                const index = transactionMap.get(oldBudgetName).findIndex(b => b.id === transactionCategory.id);
+                if (newBudgetName === oldBudgetName) {
+                    transactionMap.get(oldBudgetName)[index] = transactionCategory;
                 } else {
-                    transactionMap.get(oldbudgetName).splice(index, 1);
+                    transactionMap.get(oldBudgetName).splice(index, 1);
                     if (transactionMap.has(newBudgetName)) {
                         transactionMap.get(newBudgetName).push(transactionCategory);
                     } else {
@@ -81,6 +86,7 @@ export class TransactionCategoryService {
                     }
                 }
 
+                this.transactionService.updateTransactionCacheOnCategoryChange(oldCategoryName, oldBudgetName, transactionCategory.name);
                 this._transactionCatSubject.next(transactionMap);
                 this.budgetMeToastrService.showSuccess('Transaction category updated');
                 return transactionCategory;
@@ -95,6 +101,13 @@ export class TransactionCategoryService {
                 const index = transactionMap.get(deleteTransactionCategory.budget.name)
                     .findIndex(b => b.id === deleteTransactionCategory.id);
                 transactionMap.get(deleteTransactionCategory.budget.name).splice(index, 1);
+
+                this.transactionService.updateTransactionCacheOnCategoryChange(
+                    deleteTransactionCategory.name,
+                    deleteTransactionCategory.budget.name,
+                    undefined,
+                    true
+                );
                 this._transactionCatSubject.next(transactionMap);
                 this.budgetMeToastrService.showSuccess('Transaction category deleted');
                 return data;

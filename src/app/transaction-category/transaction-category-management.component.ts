@@ -63,13 +63,17 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
             );
         } else {
             saveTransactionCategory.id = this.selectedTransactionCategory.id;
-            this.transactionCategoryService.updateTransactionCategory(saveTransactionCategory, this.oldBudgetName).subscribe(
-                tc => {
-                    this.selectedTransactionCategory = tc;
-                    this.revert();
-                },
-                err => this.budgetMeToastrService.showError(err)
-            );
+            this.transactionCategoryService.updateTransactionCategory(
+                saveTransactionCategory,
+                this.selectedTransactionCategory.name,
+                this.oldBudgetName)
+                .subscribe(
+                    tc => {
+                        this.selectedTransactionCategory = tc;
+                        this.revert();
+                    },
+                    err => this.budgetMeToastrService.showError(err)
+                );
         }
     }
 

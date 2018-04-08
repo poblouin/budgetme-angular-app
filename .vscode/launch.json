@@ -8,6 +8,7 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:4200",
             "webRoot": "${workspaceRoot}/src",
+            "webpack:/*": "${webRoot}/*",
             "sourceMaps": true
         },
         {
@@ -16,6 +17,7 @@
             "name": "Attach to Chrome",
             "port": 9222,
             "webRoot": "${workspaceRoot}/src",
+            "webpack:/*": "${webRoot}/*",
             "sourceMaps": true
         }
     ]

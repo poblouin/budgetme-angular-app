@@ -49,16 +49,12 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             );
         } else {
             saveBudget.id = this.selectedBudget.id;
-            this.budgetService.updateBudget(saveBudget).subscribe(
+            this.budgetService.updateBudget(saveBudget, this.selectedBudget.name).subscribe(
                 budget => {
                     this.selectedBudget = budget;
                     this.revert();
                 },
-                err => {
-                    this.budgetMeToastrService.showError(err);
-                    // TODO: Remove this when PUT implemented in backend.
-                    this.revert();
-                }
+                err => this.budgetMeToastrService.showError(err)
             );
         }
     }

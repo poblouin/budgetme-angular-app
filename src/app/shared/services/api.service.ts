@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 
+import * as Raven from 'raven-js';
 import { Observable, Subscription } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -52,6 +53,7 @@ export class ApiService {
         // } catch (TypeError) {
         //   errStr = error.errors[0];
         // }
+        Raven.captureException(errStr);
         return Observable.throw(errStr);
     }
 

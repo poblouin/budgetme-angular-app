@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import _ = require('lodash');
 
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Transaction } from 'app/core/models/transaction';
+import { Budget } from '../models/budget';
 
 
 @Injectable()
@@ -24,15 +27,18 @@ export class TransactionService {
         const sources = [];
 
         budgetNames.forEach(budgetName => {
-            const param = new HttpParams();
-            param.set('budget_name', budgetName);
-            param.set('from_date', periodStart);
-            param.set('to_date', periodEnd);
-            sources.push(this.apiService.get('/transaction', param));
+            const params = new HttpParams({
+                fromObject: {
+                    'budget_name': budgetName,
+                    'from_date': periodStart,
+                    'to_date': periodEnd
+                }
+            });
+            sources.push(this.apiService.get('/transaction', params));
         });
         if (sources.length === 0) { return; }
 
-        Observable.forkJoin(...sources).subscribe(
+        Observable.forkJoin(sources).subscribe(
             (res: any) => {
                 const transactionFilterCat = new Map<string, Array<Transaction>>();
                 for (let i = 0; i < res.length; i++) {
@@ -81,7 +87,7 @@ export class TransactionService {
                 const tcName = transaction.transactionCategory.name;
                 if (!this.isOutsidePeriod(transaction.date, periodStart, periodEnd)) {
                     const key = this.createKey(budgetName, tcName, periodStart, periodEnd);
-                    this.addTransactionToCache(key, transaction);
+                    this.updateTransactionCache(key, transaction);
                     this._transactionSubject.next(this._transactionSubject.value);
                 }
                 this.budgetMeToastrService.showSuccess('Transaction created');
@@ -120,7 +126,7 @@ export class TransactionService {
                     this.deleteTransactionFromCache(oldKey, transaction.id);
                 }
                 if (!dateIsOutsidePeriod) {
-                    this.addTransactionToCache(key, transaction);
+                    this.updateTransactionCache(key, transaction);
                 }
                 this._transactionSubject.next(this._transactionSubject.value);
                 this.budgetMeToastrService.showSuccess('Transaction updated');
@@ -145,10 +151,53 @@ export class TransactionService {
         );
     }
 
-    private addTransactionToCache(key: string, transaction: Transaction): void {
+    updateTransactionCacheOnBudgetChange(oldBudgetName: string, newBudgetName?: string, isDelete?: boolean) {
+        const transactionsMap = this._transactionSubject.value;
+        let foundKey;
+        for (const key of Array.from(transactionsMap.keys())) {
+            if (oldBudgetName === this.getBudgetNameFromKey(key)) {
+                foundKey = key;
+                break;
+            }
+        }
+        if (foundKey && !isDelete) {
+            const keyStrArr = foundKey.split('_');
+            keyStrArr[0] = newBudgetName;
+            const newKey = keyStrArr.join('_');
+            const arr = _.cloneDeep(transactionsMap.get(foundKey));
+            transactionsMap.delete(foundKey);
+            transactionsMap.set(newKey, arr);
+        } else {
+            transactionsMap.delete(foundKey);
+        }
+    }
+
+    updateTransactionCacheOnCategoryChange(oldCategoryName: string, oldBudgetName?: string, newCategoryName?: string, isDelete?: boolean) {
+        const transactionsMap = this._transactionSubject.value;
+        const foundKey = this.getKeyFromBudgetAndCategory(oldBudgetName, oldCategoryName);
+        if (foundKey && !isDelete) {
+            const keyStrArr = foundKey.split('_');
+            keyStrArr[1] = newCategoryName;
+            const newKey = keyStrArr.join('_');
+            const arr = _.cloneDeep(transactionsMap.get(foundKey));
+            transactionsMap.delete(foundKey);
+            transactionsMap.set(newKey, arr);
+        } else {
+            transactionsMap.delete(foundKey);
+        }
+    }
+
+    private updateTransactionCache(key: string, transaction: Transaction): void {
         const map = this._transactionSubject.value;
         if (map.has(key)) {
-            map.get(key).push(transaction);
+            const arr = map.get(key);
+            const index = arr.findIndex(t => t.id === transaction.id);
+            if (index >= 0) {
+                arr[index] = transaction;
+                map.set(key, arr);
+            } else {
+                map.get(key).push(transaction);
+            }
         } else {
             map.set(key, new Array(transaction));
         }
@@ -166,6 +215,16 @@ export class TransactionService {
 
     private getBudgetNameFromKey(key: string): string {
         return key.split('_')[0];
+    }
+
+    private getKeyFromBudgetAndCategory(budgetName: string, categoryName: string): string {
+        const transactionsMap = this._transactionSubject.value;
+        for (const key of Array.from(transactionsMap.keys())) {
+            const splittedKey = key.split('_');
+            if (key[0] === budgetName && key[1] === categoryName) {
+                return splittedKey.join('_');
+            }
+        }
     }
 
     private isOutsidePeriod(date: string, periodStart: string, periodEnd: string): boolean {

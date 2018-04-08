@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ title }}</h2>
 <div mat-dialog-content>
-  <form [formGroup]="transactionForm">
+  <form [formGroup]="transactionForm" autocomplete="off">
     <div class="form-group">
       <label class="center-block">Amount:
         <input data-lpignore="true" type="number" class="form-control" formControlName="amount">

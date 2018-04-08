@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Budget } from '../models/budget';
+import { TransactionService } from './transaction.service';
 
 @Injectable()
 export class BudgetService {
@@ -15,7 +16,8 @@ export class BudgetService {
 
     constructor(
         private apiService: ApiService,
-        private budgetMeToastrService: BudgetMeToastrService
+        private budgetMeToastrService: BudgetMeToastrService,
+        private transactionService: TransactionService
     ) {
         this.getBudgets().subscribe().unsubscribe();
     }
@@ -48,13 +50,14 @@ export class BudgetService {
         );
     }
 
-    updateBudget(updateBudget: Budget): Observable<Budget> {
+    updateBudget(updateBudget: Budget, oldBudgetName: string): Observable<Budget> {
         return this.apiService.put(this.API_PATH + `/${updateBudget.id}`, updateBudget).map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === updateBudget.id);
                 arr[index] = budget;
+                this.transactionService.updateTransactionCacheOnBudgetChange(oldBudgetName, budget.name);
                 this._budgetSubject.next(arr);
                 this.budgetMeToastrService.showSuccess('Budget updated');
                 return budget;
@@ -68,6 +71,7 @@ export class BudgetService {
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === deleteBudget.id);
                 arr.splice(index, 1);
+                this.transactionService.updateTransactionCacheOnBudgetChange(deleteBudget.name, undefined, true);
                 this._budgetSubject.next(arr);
                 this.budgetMeToastrService.showSuccess('Budget deleted');
                 return data;
