@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 
 import { UserService } from '../shared';
+import { BudgetMeToastrService } from '../core/services/toastr.service';
 
 @Component({
   selector: 'auth-page',
   templateUrl: './auth.component.html',
-  styleUrls: [
-    './auth.component.css'
-  ]
+  styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit {
   authType: String = '';
@@ -23,7 +21,7 @@ export class AuthComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private fb: FormBuilder,
-    private toastrService: ToastrService
+    private budgetMeToastrService: BudgetMeToastrService
   ) {
     this.authForm = this.fb.group({
       'email': ['', Validators.required],
@@ -51,7 +49,7 @@ export class AuthComponent implements OnInit {
         data => this.router.navigateByUrl('/home'),
         err => {
           this.isSubmitting = false;
-          this.showError(err);
+          this.budgetMeToastrService.showError(err);
         }
         );
     } else {
@@ -61,14 +59,10 @@ export class AuthComponent implements OnInit {
         data => this.router.navigateByUrl('/home'),
         err => {
           this.isSubmitting = false;
-          this.showError(err);
+          this.budgetMeToastrService.showError(err);
         }
         );
     }
-  }
-
-  private showError(err: any): void {
-    this.toastrService.error(err, 'Oh no!');
   }
 
 }

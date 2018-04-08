@@ -36,7 +36,7 @@ export class UserService {
     }
 
     populate() {
-        if (this.jwtService.getToken()) {
+        if (this.jwtService.getAccessToken()) {
             this.apiService.get('/user').subscribe(
                 data => this.setUser(data.user),
                 err => this.removeUser()
@@ -54,9 +54,8 @@ export class UserService {
                         this.setUser(data.user);
                         return data;
                     },
-                    err => {
-                        this.removeUser();
-                    });
+                    err => this.removeUser()
+                );
             }
         );
     }
@@ -94,11 +93,12 @@ export class UserService {
     }
 
     private obtainToken(credentials: Object): Observable<Boolean> {
-        return this.apiService.post('/obtain-token', credentials).map(
+        return this.apiService.post('/token', credentials).map(
             data => {
-                this.jwtService.saveToken(data.token);
+                this.jwtService.saveToken(data);
                 return true;
-            }
+            },
+            err => false
         );
     }
 

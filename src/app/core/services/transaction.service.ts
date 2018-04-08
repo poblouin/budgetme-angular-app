@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -24,7 +24,7 @@ export class TransactionService {
         const sources = [];
 
         budgetNames.forEach(budgetName => {
-            const param = new URLSearchParams();
+            const param = new HttpParams();
             param.set('budget_name', budgetName);
             param.set('from_date', periodStart);
             param.set('to_date', periodEnd);

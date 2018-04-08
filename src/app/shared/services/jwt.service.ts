@@ -1,34 +1,31 @@
 import { Injectable } from '@angular/core';
 
-import * as jwt_decode from 'jwt-decode';
-
 import { UserService } from './user.service';
 
 
 @Injectable()
 export class JwtService {
 
-  getToken(): String {
-    return window.localStorage['jwtToken'];
-  }
-
-  saveToken(token: String) {
-    window.localStorage['jwtToken'] = token;
-  }
-
-  destroyToken() {
-    window.localStorage.removeItem('jwtToken');
-  }
-
-  isTokenAlmostExpired() {
-    if (this.getToken() !== undefined) {
-      const token = window.localStorage['jwtToken'];
-      const decoded = jwt_decode(token);
-      const exp = decoded['exp'];
-      const ms = Date.now();
-      const seconds = Math.floor(ms / 1000);
-      return (exp - seconds) < 20;
+    getAccessToken(): String {
+        return window.localStorage['jwtAccessToken'];
     }
-  }
+
+    getRefreshToken(): String {
+        return window.localStorage['jwtRefreshToken'];
+    }
+
+    saveToken(token_obj: any) {
+        if ('access' in token_obj) {
+            window.localStorage['jwtAccessToken'] = token_obj.access;
+        }
+        if ('refresh' in token_obj) {
+            window.localStorage['jwtRefreshToken'] = token_obj.refresh;
+        }
+    }
+
+    destroyToken() {
+        window.localStorage.removeItem('jwtAccessToken');
+        window.localStorage.removeItem('jwtRefreshToken');
+    }
 
 }
