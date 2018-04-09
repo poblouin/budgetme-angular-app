@@ -8,7 +8,6 @@ import { ISubscription } from 'rxjs/Subscription';
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { TransactionCategory } from 'app/core/models/transaction-category';
-import { TransactionService } from './transaction.service';
 import { BudgetService } from './budget.service';
 import { Budget } from '../models/budget';
 
@@ -18,23 +17,24 @@ export class TransactionCategoryService implements OnDestroy {
 
     private categorySub: ISubscription;
     private budgetSub: ISubscription;
-    private _transactionCatSubject = new BehaviorSubject<Map<string, Array<TransactionCategory>>>(new Map());
     private budgets: Array<Budget>;
+    private _transactionCatSubject = new BehaviorSubject<Map<string, Array<TransactionCategory>>>(new Map());
 
     public transactionCategories = this._transactionCatSubject.asObservable();
 
     constructor(
         private apiService: ApiService,
         private budgetMeToastrService: BudgetMeToastrService,
-        private transactionService: TransactionService,
         private budgetService: BudgetService
     ) {
-        this.budgetSub = this.budgetService.budgets.subscribe(
-            budgets => {
-                this.budgets = budgets;
-                this.categorySub = this.getTransactionCategories(true).subscribe();
-            }
-        );
+        this.budgetSub = this.budgetService.budgets
+            .filter(budgets => budgets.length > 0)
+            .subscribe(
+                budgets => {
+                    this.budgets = budgets;
+                    this.categorySub = this.getTransactionCategories(true).subscribe();
+                }
+            );
     }
 
     ngOnDestroy(): void {
@@ -45,24 +45,24 @@ export class TransactionCategoryService implements OnDestroy {
         if (isInit) {
             return this.apiService.get(API_PATH)
                 .map(
-                data => {
-                    const newM = new Map<string, Array<TransactionCategory>>();
-                    data.transaction_categories.forEach(element => {
-                        const budgetName = element.budget.name;
-                        const budget = this.budgets.find(b => b.id === element.budget.id);
-                        const transactionCat = new TransactionCategory(element, budget);
-                        if (newM.get(budgetName)) {
-                            newM.get(budgetName).push(transactionCat);
-                        } else {
-                            newM.set(budgetName, new Array(transactionCat));
-                        }
-                    });
-                    this.transactionCategories = this._transactionCatSubject.asObservable();
-                    this._transactionCatSubject.next(newM);
-                    return newM;
-                },
-                err => this.budgetMeToastrService.showError(err)
-            );
+                    data => {
+                        const newM = new Map<string, Array<TransactionCategory>>();
+                        data.transaction_categories.forEach(element => {
+                            const budgetName = element.budget.name;
+                            const budget = this.budgets.find(b => b.id === element.budget.id);
+                            const transactionCat = new TransactionCategory(element, budget);
+                            if (newM.get(budgetName)) {
+                                newM.get(budgetName).push(transactionCat);
+                            } else {
+                                newM.set(budgetName, new Array(transactionCat));
+                            }
+                        });
+                        this.transactionCategories = this._transactionCatSubject.asObservable();
+                        this._transactionCatSubject.next(newM);
+                        return newM;
+                    },
+                    err => this.budgetMeToastrService.showError(err)
+                );
         } else {
             return this.transactionCategories;
         }
@@ -115,7 +115,6 @@ export class TransactionCategoryService implements OnDestroy {
                     }
                 }
 
-                this.transactionService.updateTransactionCacheOnCategoryChange(oldCategoryName, oldBudgetName, transactionCategory.name);
                 this._transactionCatSubject.next(transactionMap);
                 this.budgetMeToastrService.showSuccess('Transaction category updated');
                 return transactionCategory;
@@ -131,12 +130,6 @@ export class TransactionCategoryService implements OnDestroy {
                     .findIndex(b => b.id === deleteTransactionCategory.id);
                 transactionMap.get(deleteTransactionCategory.budget.name).splice(index, 1);
 
-                this.transactionService.updateTransactionCacheOnCategoryChange(
-                    deleteTransactionCategory.name,
-                    deleteTransactionCategory.budget.name,
-                    undefined,
-                    true
-                );
                 this._transactionCatSubject.next(transactionMap);
                 this.budgetMeToastrService.showSuccess('Transaction category deleted');
                 return data;

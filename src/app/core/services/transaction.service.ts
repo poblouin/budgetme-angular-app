@@ -1,53 +1,79 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import _ = require('lodash');
+import * as moment from 'moment';
 
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Transaction } from 'app/core/models/transaction';
 import { Budget } from '../models/budget';
+import { ISubscription } from 'rxjs/Subscription';
+import { TransactionCategory } from 'app/core/models/transaction-category';
+import { TransactionCategoryService } from './transaction-category.service';
+import { Constant } from '../../shared/constants';
 
+const API_PATH = '/transaction';
 
 @Injectable()
-export class TransactionService {
-    private API_PATH = '/transaction';
+export class TransactionService implements OnDestroy {
+    private transactionSub: ISubscription;
+    private transactionCategoriesSub: ISubscription;
+    private transactionCategories: Array<TransactionCategory>;
     private _transactionSubject = new BehaviorSubject<Map<string, Array<Transaction>>>(new Map());
 
     public readonly transactions = this._transactionSubject.asObservable();
 
     constructor(
         private apiService: ApiService,
+        private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService
-    ) { }
+    ) {
+        this.transactionCategoriesSub = this.transactionCategoryService.transactionCategories
+            .filter(tcs => tcs.size > 0)
+            .subscribe(
+                tcs => {
+                    const arr = new Array<TransactionCategory>();
+                    tcs.forEach((val: Array<TransactionCategory>, key: string) => arr.push(...val));
+                    this.transactionCategories = arr;
 
-    getTransactions(budgetNames: Array<string>, periodStart: string, periodEnd: string): void {
-        const sources = [];
+                    // Init with default to week period;
+                    const now = moment();
+                    const periodStart = now.startOf('isoWeek').format(Constant.DATE_FORMAT);
+                    const periodEnd = now.endOf('isoWeek').format(Constant.DATE_FORMAT);
+                    this.transactionSub = this.getTransactions(periodStart, periodEnd, true).subscribe();
+                }
+            );
+    }
 
-        budgetNames.forEach(budgetName => {
+    ngOnDestroy(): void {
+        this.transactionSub.unsubscribe();
+        this.transactionCategoriesSub.unsubscribe();
+    }
+
+    getTransactions(periodStart?: string, periodEnd?: string, isInit?: boolean): Observable<Map<string, Array<Transaction>>> {
+        if (isInit) {
             const params = new HttpParams({
                 fromObject: {
-                    'budget_name': budgetName,
                     'from_date': periodStart,
                     'to_date': periodEnd
                 }
             });
-            sources.push(this.apiService.get('/transaction', params));
-        });
-        if (sources.length === 0) { return; }
 
-        Observable.forkJoin(sources).subscribe(
-            (res: any) => {
-                const transactionFilterCat = new Map<string, Array<Transaction>>();
-                for (let i = 0; i < res.length; i++) {
-                    const transactions = res[i].transactions;
-                    transactions.forEach(e => {
-                        const transaction = new Transaction(e);
+            return this.apiService.get(API_PATH, params).map(
+                data => {
+                    const transactions = data.transactions;
+                    const transactionFilterCat = new Map<string, Array<Transaction>>();
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transactionCategory = this.transactionCategories
+                            .find(tc => tc.id === transactions[i].transaction_category.id);
+                        if (!transactionCategory.budget.isActiveForMonth()) { continue; }
+                        const transaction = new Transaction(transactions[i], transactionCategory);
                         const key = this.createKey(
-                            transaction.transactionCategory.budget.name,
-                            transaction.transactionCategory.name,
+                            transactionCategory.budget.name,
+                            transactionCategory.name,
                             periodStart,
                             periodEnd
                         );
@@ -57,11 +83,14 @@ export class TransactionService {
                         } else {
                             transactionFilterCat.set(key, new Array(transaction));
                         }
-                    });
+                    }
+                    this._transactionSubject.next(transactionFilterCat);
+                    return transactionFilterCat;
                 }
-                this._transactionSubject.next(transactionFilterCat);
-            }
-        );
+            );
+        } else {
+            return this.transactions;
+        }
     }
 
     getTransactionsPerBudget(): Map<string, Array<Transaction>> {
@@ -80,9 +109,10 @@ export class TransactionService {
     }
 
     createTransaction(newTransaction: Transaction, periodStart: string, periodEnd: string): Observable<Transaction> {
-        return this.apiService.post(this.API_PATH, newTransaction).map(
+        return this.apiService.post(API_PATH, newTransaction).map(
             data => {
-                const transaction = new Transaction(data.transaction);
+                const transactionCategory = this.transactionCategories.find(tc => tc.id === data.transaction.transaction_category.id);
+                const transaction = new Transaction(data.transaction, transactionCategory);
                 const budgetName = transaction.transactionCategory.budget.name;
                 const tcName = transaction.transactionCategory.name;
                 if (!this.isOutsidePeriod(transaction.date, periodStart, periodEnd)) {
@@ -102,9 +132,10 @@ export class TransactionService {
         periodStart: string,
         periodEnd: string
     ): Observable<Transaction> {
-        return this.apiService.put(`${this.API_PATH}/${updateTransaction.id}`, updateTransaction).map(
+        return this.apiService.put(`${API_PATH}/${updateTransaction.id}`, updateTransaction).map(
             data => {
-                const transaction = new Transaction(data.transaction);
+                const transactionCategory = this.transactionCategories.find(tc => tc.id === data.transaction.transaction_category.id);
+                const transaction = new Transaction(data.transaction, transactionCategory);
                 const newTranBudgetName = transaction.transactionCategory.budget.name;
                 const newTranCatName = transaction.transactionCategory.name;
                 const key = this.createKey(newTranBudgetName, newTranCatName, periodStart, periodEnd);
@@ -136,7 +167,7 @@ export class TransactionService {
     }
 
     deleteTransaction(deleteTransaction: any, periodStart: string, periodEnd: string): Observable<Transaction> {
-        return this.apiService.delete(this.API_PATH + `/${deleteTransaction.id}`).map(
+        return this.apiService.delete(API_PATH + `/${deleteTransaction.id}`).map(
             data => {
                 if (!this.isOutsidePeriod(deleteTransaction.date, periodStart, periodEnd)) {
                     const budgetName = deleteTransaction.transaction_category.budget.name;

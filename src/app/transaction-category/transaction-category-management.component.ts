@@ -10,7 +10,8 @@ import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.comp
 import {
     TransactionCategoryService,
     BudgetService,
-    BudgetMeToastrService
+    BudgetMeToastrService,
+    TransactionService
 } from '../core/services';
 
 @Component({
@@ -29,6 +30,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
 
     constructor(
         private budgetService: BudgetService,
+        private transactionService: TransactionService,
         private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService,
         private fb: FormBuilder,
@@ -73,6 +75,11 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
                 this.oldBudgetName)
                 .subscribe(
                     tc => {
+                        this.transactionService.updateTransactionCacheOnCategoryChange(
+                            this.selectedTransactionCategory.name,
+                            this.oldBudgetName,
+                            saveTransactionCategory.name
+                        );
                         this.selectedTransactionCategory = tc;
                         this.revert();
                     },
@@ -95,6 +102,12 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
             if (confirm) {
                 this.transactionCategoryService.deleteTransactionCategory(this.selectedTransactionCategory).subscribe(
                     budget => {
+                        this.transactionService.updateTransactionCacheOnCategoryChange(
+                            this.selectedTransactionCategory.name,
+                            this.selectedTransactionCategory.budget.name,
+                            undefined,
+                            true
+                        );
                         this.selectedTransactionCategory = undefined;
                         this.revert();
                     },

@@ -7,11 +7,11 @@ export class Transaction {
     description: string;
     transactionCategory: TransactionCategory;
 
-    constructor(jsonObj: any) {
+    constructor(jsonObj: any, transactionCategory: TransactionCategory) {
         this.id = jsonObj.id;
         this.amount = Number(jsonObj.amount);
         this.date = jsonObj.date;
         this.description = jsonObj.description;
-        this.transactionCategory = jsonObj.transaction_category;
+        this.transactionCategory = transactionCategory;
     }
 }

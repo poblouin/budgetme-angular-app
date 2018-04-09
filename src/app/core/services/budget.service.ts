@@ -1,13 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { ISubscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
 
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Budget } from '../models/budget';
-import { TransactionService } from './transaction.service';
-import { ISubscription } from 'rxjs/Subscription';
-import { map } from 'rxjs/operators';
 
 const API_PATH = '/budget';
 
@@ -20,8 +20,7 @@ export class BudgetService implements OnDestroy {
 
     constructor(
         private apiService: ApiService,
-        private budgetMeToastrService: BudgetMeToastrService,
-        private transactionService: TransactionService
+        private budgetMeToastrService: BudgetMeToastrService
     ) {
         this.budgetSub = this.getBudgets(true).subscribe();
     }
@@ -63,14 +62,13 @@ export class BudgetService implements OnDestroy {
         );
     }
 
-    updateBudget(updateBudget: Budget, oldBudgetName: string): Observable<Budget> {
+    updateBudget(updateBudget: Budget): Observable<Budget> {
         return this.apiService.put(API_PATH + `/${updateBudget.id}`, updateBudget).map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === updateBudget.id);
                 arr[index] = budget;
-                this.transactionService.updateTransactionCacheOnBudgetChange(oldBudgetName, budget.name);
                 this._budgetSubject.next(arr);
                 this.budgetMeToastrService.showSuccess('Budget updated');
                 return budget;
@@ -84,7 +82,6 @@ export class BudgetService implements OnDestroy {
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === deleteBudget.id);
                 arr.splice(index, 1);
-                this.transactionService.updateTransactionCacheOnBudgetChange(deleteBudget.name, undefined, true);
                 this._budgetSubject.next(arr);
                 this.budgetMeToastrService.showSuccess('Budget deleted');
                 return data;

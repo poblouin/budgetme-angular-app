@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import * as Raven from 'raven-js';import { Observable, Subscription } from 'rxjs/Rx';
+import { Observable, Subscription } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 

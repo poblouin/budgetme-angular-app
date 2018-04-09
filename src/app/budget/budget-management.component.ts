@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
 import { Budget, BudgetFrequencyEnum } from '../core/models/budget';
-import { BudgetService, BudgetMeToastrService } from '../core';
+import { BudgetService, BudgetMeToastrService, TransactionService } from '../core';
 import { ISubscription } from 'rxjs/Subscription';
 import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.component';
 
@@ -23,6 +23,7 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
 
     constructor(
         private budgetService: BudgetService,
+        private transactionService: TransactionService,
         private budgetMeToastrService: BudgetMeToastrService,
         private fb: FormBuilder,
         public dialog: MatDialog
@@ -53,9 +54,10 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             );
         } else {
             saveBudget.id = this.selectedBudget.id;
-            this.budgetService.updateBudget(saveBudget, this.selectedBudget.name).subscribe(
+            this.budgetService.updateBudget(saveBudget).subscribe(
                 budget => {
                     this.selectedBudget = budget;
+                    this.transactionService.updateTransactionCacheOnBudgetChange(this.selectedBudget.name, saveBudget.name);
                     this.revert();
                 },
                 err => this.budgetMeToastrService.showError(err)
@@ -77,6 +79,7 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             if (confirm) {
                 this.budgetService.deleteBudget(this.selectedBudget).subscribe(
                     budget => {
+                        this.transactionService.updateTransactionCacheOnBudgetChange(this.selectedBudget.name, undefined, true);
                         this.selectedBudget = undefined;
                         this.revert();
                     },

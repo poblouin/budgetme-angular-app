@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -15,10 +15,11 @@ import { TransactionService } from './transaction.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetPeriod } from '../../shared/models/budget-period';
+import { ISubscription } from 'rxjs/Subscription';
 
 
 @Injectable()
-export class DashService {
+export class DashService implements OnDestroy {
 
     // Material Palette Colors.
     // TODO: Generate this considering the number of budget or limit number of budget.
@@ -41,6 +42,7 @@ export class DashService {
         '#00BCD4', // Cyan
         '#795548'  // Brown
     ];
+    private subscriptions = new Array<ISubscription>();
     private _budgetPeriodSubject = new BehaviorSubject<BudgetPeriod>(new BudgetPeriod(Constant.DEFAULT_PERIOD));
     private _selectedPeriodSubject = new BehaviorSubject<Period>(Constant.DEFAULT_PERIOD);
     private _budgetTotal = new BehaviorSubject<number>(0);
@@ -60,34 +62,31 @@ export class DashService {
         private transactionService: TransactionService,
         private budgetMeToastrService: BudgetMeToastrService
     ) {
-        let init = true;
-        this.budgetService.budgets.subscribe(
+        this.subscriptions.push(this.budgetService.budgets.subscribe(
             budgets => {
                 this.budgets = budgets;
-                if (init) {
-                    this.transactionService.getTransactions(
-                        this.getBudgetNames(),
-                        this.getBudgetPeriod().periodStart,
-                        this.getBudgetPeriod().periodEnd
-                    );
-                    init = false;
-                }
                 this.calculateTotalTransactions();
                 this.calculateBudgetTotal();
             }
-        );
-        this.transactionCatService.transactionCategories.subscribe(
+        ));
+        this.subscriptions.push(this.transactionCatService.transactionCategories.subscribe(
             tranCats => {
                 this.transactionCategories = tranCats;
                 this.calculateTotalTransactions();
                 this.calculateBudgetTotal();
             }
-        );
-        this.transactionService.transactions.subscribe(
+        ));
+        this.subscriptions.push(this.transactionService.transactions.subscribe(
             transactions => {
                 this.calculateTotalTransactions();
             }
-        );
+        ));
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+        });
     }
 
     getBudgetPeriod(): BudgetPeriod {
@@ -107,12 +106,11 @@ export class DashService {
 
     setSelectedPeriod(newPeriod: Period): void {
         this._selectedPeriodSubject.next(newPeriod);
-        this.transactionService.getTransactions(
-            this.getBudgetNames(),
-            this.getBudgetPeriod().periodStart,
-            this.getBudgetPeriod().periodEnd
-        );
-        this.calculateBudgetTotal();
+        this.subscriptions
+            .push(this.transactionService.getTransactions(this.getBudgetPeriod().periodStart, this.getBudgetPeriod().periodEnd, true)
+                .subscribe(
+                    data => this.calculateBudgetTotal()
+                ));
     }
 
     getChartColors(): Array<any> {
