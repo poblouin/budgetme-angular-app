@@ -3,7 +3,7 @@ import { HttpParams } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import _ = require('lodash');
+import * as _ from 'lodash';
 import * as moment from 'moment';
 
 import { ApiService } from '../../shared/services/api.service';
