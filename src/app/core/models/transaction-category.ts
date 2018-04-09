@@ -5,9 +5,9 @@ export class TransactionCategory {
     name: string;
     budget: Budget;
 
-    constructor(jsonObj: any) {
+    constructor(jsonObj: any, budget: Budget) {
         this.id = jsonObj.id;
         this.name = jsonObj.name;
-        this.budget = new Budget(jsonObj.budget);
+        this.budget = budget;
     }
 }

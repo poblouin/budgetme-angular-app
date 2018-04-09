@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import * as Raven from 'raven-js';
 import { ToastrModule } from 'ngx-toastr';
 
 import { environment } from 'environments/environment';
@@ -26,16 +25,6 @@ import {
     NotFoundComponent,
     JwtInterceptor
 } from './shared';
-
-Raven
-    .config(environment.sentry_api_url)
-    .install();
-
-export class RavenErrorHandler implements ErrorHandler {
-    handleError(err: any): void {
-        Raven.captureException(err);
-    }
-}
 
 const rootRouting: ModuleWithProviders = RouterModule.forRoot([
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -72,7 +61,6 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
         AuthGuard,
         JwtService,
         UserService,
-        { provide: ErrorHandler, useClass: RavenErrorHandler },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
     ],
 

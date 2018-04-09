@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
@@ -6,10 +6,14 @@ import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Budget } from '../models/budget';
 import { TransactionService } from './transaction.service';
+import { ISubscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
+
+const API_PATH = '/budget';
 
 @Injectable()
-export class BudgetService {
-    private API_PATH = '/budget';
+export class BudgetService implements OnDestroy {
+    private budgetSub: ISubscription;
     private _budgetSubject = new BehaviorSubject<Array<Budget>>(new Array<Budget>());
 
     public budgets = this._budgetSubject.asObservable();
@@ -19,26 +23,35 @@ export class BudgetService {
         private budgetMeToastrService: BudgetMeToastrService,
         private transactionService: TransactionService
     ) {
-        this.getBudgets().subscribe().unsubscribe();
+        this.budgetSub = this.getBudgets(true).subscribe();
     }
 
-    getBudgets(): Observable<Array<Budget>> {
-        const obs = this.apiService.get(this.API_PATH);
-        obs.subscribe(
-            data => {
-                const arr = new Array<Budget>();
-                data.budgets.forEach(element => {
-                    arr.push(new Budget(element));
-                });
-                this._budgetSubject.next(arr);
-            },
-            err => this.budgetMeToastrService.showError(err)
-        );
-        return obs;
+    ngOnDestroy(): void {
+        this.budgetSub.unsubscribe();
+    }
+
+    getBudgets(isInit?: boolean): Observable<Array<Budget>> {
+        if (isInit) {
+            return this.apiService.get(API_PATH)
+                .map(
+                data => {
+                    const arr = new Array<Budget>();
+                    data.budgets.forEach(element => {
+                        arr.push(new Budget(element));
+                    });
+                    this.budgets = this._budgetSubject.asObservable();
+                    this._budgetSubject.next(arr);
+                    return arr;
+                },
+                err => this.budgetMeToastrService.showError(err)
+            );
+        } else {
+            return this.budgets;
+        }
     }
 
     createBudget(saveBudget: Budget): Observable<Budget> {
-        return this.apiService.post(this.API_PATH, saveBudget).map(
+        return this.apiService.post(API_PATH, saveBudget).map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
@@ -51,7 +64,7 @@ export class BudgetService {
     }
 
     updateBudget(updateBudget: Budget, oldBudgetName: string): Observable<Budget> {
-        return this.apiService.put(this.API_PATH + `/${updateBudget.id}`, updateBudget).map(
+        return this.apiService.put(API_PATH + `/${updateBudget.id}`, updateBudget).map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
@@ -66,7 +79,7 @@ export class BudgetService {
     }
 
     deleteBudget(deleteBudget: Budget): Observable<Budget> {
-        return this.apiService.delete(this.API_PATH + `/${deleteBudget.id}`).map(
+        return this.apiService.delete(API_PATH + `/${deleteBudget.id}`).map(
             data => {
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === deleteBudget.id);
