@@ -15,8 +15,7 @@ const API_PATH = '/transaction-category';
 @Injectable()
 export class TransactionCategoryService implements OnDestroy {
 
-    private categorySub: ISubscription;
-    private budgetSub: ISubscription;
+    private subscriptions = new Array<ISubscription>();
     private budgets: Array<Budget>;
     private _transactionCatSubject = new BehaviorSubject<Map<string, Array<TransactionCategory>>>(new Map());
 
@@ -27,18 +26,20 @@ export class TransactionCategoryService implements OnDestroy {
         private budgetMeToastrService: BudgetMeToastrService,
         private budgetService: BudgetService
     ) {
-        this.budgetSub = this.budgetService.budgets
+        this.subscriptions.push(this.budgetService.budgets
             .filter(budgets => budgets.length > 0)
             .subscribe(
                 budgets => {
                     this.budgets = budgets;
-                    this.categorySub = this.getTransactionCategories(true).subscribe();
+                    this.subscriptions.push(this.getTransactionCategories(true).subscribe());
                 }
-            );
+            ));
     }
 
     ngOnDestroy(): void {
-        this.categorySub.unsubscribe();
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+        });
     }
 
     getTransactionCategories(isInit?: boolean): Observable<Map<string, Array<TransactionCategory>>> {

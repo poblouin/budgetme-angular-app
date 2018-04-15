@@ -13,7 +13,7 @@ import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.comp
     templateUrl: './budget-management.component.html'
 })
 export class BudgetManagementComponent implements OnInit, OnDestroy {
-    private budgetSub: ISubscription;
+    private subscriptions = new Array<ISubscription>();
 
     public selectedBudget: Budget;
     public budgets: Array<Budget>;
@@ -33,35 +33,36 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.budgetSub = this.budgetService.budgets.subscribe(
+        this.subscriptions.push(this.budgetService.budgets.subscribe(
             budgets => this.budgets = budgets
-        );
+        ));
     }
 
     ngOnDestroy(): void {
-        this.budgetSub.unsubscribe();
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+        });
     }
 
     onSubmit(): void {
         const saveBudget = this.prepareSaveBudget();
         if (!this.selectedBudget) {
-            this.budgetService.createBudget(saveBudget).subscribe(
+            this.subscriptions.push(this.budgetService.createBudget(saveBudget).subscribe(
                 budget => {
                     this.selectedBudget = budget;
                     this.revert();
                 },
                 err => this.budgetMeToastrService.showError(err)
-            );
+            ));
         } else {
             saveBudget.id = this.selectedBudget.id;
-            this.budgetService.updateBudget(saveBudget).subscribe(
+            this.subscriptions.push(this.budgetService.updateBudget(saveBudget).subscribe(
                 budget => {
                     this.selectedBudget = budget;
-                    this.transactionService.updateTransactionCacheOnBudgetChange(this.selectedBudget.name, saveBudget.name);
                     this.revert();
                 },
                 err => this.budgetMeToastrService.showError(err)
-            );
+            ));
         }
     }
 
@@ -75,18 +76,17 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
             disableClose: true
         });
 
-        matDialogRef.beforeClose().subscribe(confirm => {
+        this.subscriptions.push(matDialogRef.beforeClose().subscribe(confirm => {
             if (confirm) {
                 this.budgetService.deleteBudget(this.selectedBudget).subscribe(
                     budget => {
-                        this.transactionService.updateTransactionCacheOnBudgetChange(this.selectedBudget.name, undefined, true);
                         this.selectedBudget = undefined;
                         this.revert();
                     },
                     err => this.budgetMeToastrService.showError(err)
                 );
             }
-        });
+        }));
     }
 
     revert(): void {

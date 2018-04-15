@@ -65,20 +65,17 @@ export class DashService implements OnDestroy {
         this.subscriptions.push(this.budgetService.budgets.subscribe(
             budgets => {
                 this.budgets = budgets;
-                this.calculateTotalTransactions();
-                this.calculateBudgetTotal();
             }
         ));
         this.subscriptions.push(this.transactionCatService.transactionCategories.subscribe(
             tranCats => {
                 this.transactionCategories = tranCats;
-                this.calculateTotalTransactions();
-                this.calculateBudgetTotal();
             }
         ));
         this.subscriptions.push(this.transactionService.transactions.subscribe(
             transactions => {
                 this.calculateTotalTransactions();
+                this.calculateBudgetTotal();
             }
         ));
     }

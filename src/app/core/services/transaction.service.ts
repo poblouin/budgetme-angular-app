@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 import * as moment from 'moment';
@@ -10,7 +11,6 @@ import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { Transaction } from 'app/core/models/transaction';
 import { Budget } from '../models/budget';
-import { ISubscription } from 'rxjs/Subscription';
 import { TransactionCategory } from 'app/core/models/transaction-category';
 import { TransactionCategoryService } from './transaction-category.service';
 import { Constant } from '../../shared/constants';
@@ -19,8 +19,7 @@ const API_PATH = '/transaction';
 
 @Injectable()
 export class TransactionService implements OnDestroy {
-    private transactionSub: ISubscription;
-    private transactionCategoriesSub: ISubscription;
+    private subscriptions = new Array<ISubscription>();
     private transactionCategories: Array<TransactionCategory>;
     private _transactionSubject = new BehaviorSubject<Map<string, Array<Transaction>>>(new Map());
 
@@ -31,7 +30,7 @@ export class TransactionService implements OnDestroy {
         private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService
     ) {
-        this.transactionCategoriesSub = this.transactionCategoryService.transactionCategories
+        this.subscriptions.push(this.transactionCategoryService.transactionCategories
             .filter(tcs => tcs.size > 0)
             .subscribe(
                 tcs => {
@@ -43,14 +42,15 @@ export class TransactionService implements OnDestroy {
                     const now = moment();
                     const periodStart = now.startOf('isoWeek').format(Constant.DATE_FORMAT);
                     const periodEnd = now.endOf('isoWeek').format(Constant.DATE_FORMAT);
-                    this.transactionSub = this.getTransactions(periodStart, periodEnd, true).subscribe();
+                    this.subscriptions.push(this.getTransactions(periodStart, periodEnd, true).subscribe());
                 }
-            );
+            ));
     }
 
     ngOnDestroy(): void {
-        this.transactionSub.unsubscribe();
-        this.transactionCategoriesSub.unsubscribe();
+        this.subscriptions.forEach(sub => {
+            sub.unsubscribe();
+        });
     }
 
     getTransactions(periodStart?: string, periodEnd?: string, isInit?: boolean): Observable<Map<string, Array<Transaction>>> {
@@ -180,42 +180,6 @@ export class TransactionService implements OnDestroy {
                 return data;
             }
         );
-    }
-
-    updateTransactionCacheOnBudgetChange(oldBudgetName: string, newBudgetName?: string, isDelete?: boolean) {
-        const transactionsMap = this._transactionSubject.value;
-        let foundKey;
-        for (const key of Array.from(transactionsMap.keys())) {
-            if (oldBudgetName === this.getBudgetNameFromKey(key)) {
-                foundKey = key;
-                break;
-            }
-        }
-        if (foundKey && !isDelete) {
-            const keyStrArr = foundKey.split('_');
-            keyStrArr[0] = newBudgetName;
-            const newKey = keyStrArr.join('_');
-            const arr = _.cloneDeep(transactionsMap.get(foundKey));
-            transactionsMap.delete(foundKey);
-            transactionsMap.set(newKey, arr);
-        } else {
-            transactionsMap.delete(foundKey);
-        }
-    }
-
-    updateTransactionCacheOnCategoryChange(oldCategoryName: string, oldBudgetName?: string, newCategoryName?: string, isDelete?: boolean) {
-        const transactionsMap = this._transactionSubject.value;
-        const foundKey = this.getKeyFromBudgetAndCategory(oldBudgetName, oldCategoryName);
-        if (foundKey && !isDelete) {
-            const keyStrArr = foundKey.split('_');
-            keyStrArr[1] = newCategoryName;
-            const newKey = keyStrArr.join('_');
-            const arr = _.cloneDeep(transactionsMap.get(foundKey));
-            transactionsMap.delete(foundKey);
-            transactionsMap.set(newKey, arr);
-        } else {
-            transactionsMap.delete(foundKey);
-        }
     }
 
     private updateTransactionCache(key: string, transaction: Transaction): void {
