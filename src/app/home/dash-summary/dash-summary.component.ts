@@ -9,7 +9,7 @@ import 'chart.piecelabel.js';
 
 import { Budget } from '../../core/models/budget';
 import { BudgetPeriod, TransactionDialogComponent } from 'app/shared';
-import { DashService } from '../../core/services';
+import { DashService, BudgetColorService } from '../../core/services';
 
 
 @Component({
@@ -17,6 +17,7 @@ import { DashService } from '../../core/services';
     templateUrl: './dash-summary.component.html'
 })
 export class DashSummaryComponent implements OnInit, OnDestroy {
+
     @ViewChild(BaseChartDirective) private _chart;
     @ViewChild('fabButton') private fabButton: MatButton;
     private summaryTotalSub: ISubscription;
@@ -40,17 +41,15 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
             position: 'right',
         }
     };
-    // TODO: Generate this considering the number of budget or limit number of budget. See DashService
     public chartColor: Array<any>;
     public budgetSpentFormatted: string;
     public budgetRemainingFormatted: string;
 
     constructor(
         private dashService: DashService,
+        private budgetColorService: BudgetColorService,
         public dialog: MatDialog
-    ) {
-        this.chartColor = this.dashService.getChartColors();
-    }
+    ) { }
 
     ngOnInit(): void {
         this.budgetTotalSub = this.dashService.budgetTotal
@@ -75,6 +74,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
                 });
                 this.chartBudgetNames = budgetNames;
                 this.chartBudgetTotal = budgetAmount;
+                this.chartColor = this.budgetColorService.getChartColors(budgetNames);
                 this.forceChartRefresh();
                 this.calculateBudgets();
             }

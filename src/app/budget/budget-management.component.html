@@ -36,7 +36,14 @@
         <label class="center-block">End Date:
           <input data-lpignore="true" type="date" class="form-control" formControlName="endDate">
         </label>
-      </div>            
+      </div>
+      <div class="form-group">
+        <label class="center-block">Color:
+          <select class="form-control" formControlName="colorDisplay">
+            <option [style.background]="color.color" *ngFor="let color of remainingColors" [value]="color.color">{{ color.name }}</option>
+          </select>
+        </label>
+      </div>              
       <div class="form-controls">
         <button type="button" (click)="onSubmit()" [disabled]="budgetForm.pristine" class="btn btn-success space-right">Save</button>
         <button type="button" (click)="revert()" [disabled]="budgetForm.pristine" class="btn btn-danger">Reset</button>

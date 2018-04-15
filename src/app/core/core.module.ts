@@ -4,9 +4,9 @@ import {
     BudgetMeToastrService,
     TransactionCategoryService,
     TransactionService,
-    DashService
+    DashService,
+    BudgetColorService
 } from './index';
-
 
 @NgModule({
     imports: [
@@ -16,7 +16,8 @@ import {
         BudgetMeToastrService,
         TransactionCategoryService,
         TransactionService,
-        DashService
+        DashService,
+        BudgetColorService
     ],
     declarations: [
 

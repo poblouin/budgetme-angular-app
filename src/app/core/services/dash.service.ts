@@ -21,27 +21,6 @@ import { ISubscription } from 'rxjs/Subscription';
 @Injectable()
 export class DashService implements OnDestroy {
 
-    // Material Palette Colors.
-    // TODO: Generate this considering the number of budget or limit number of budget.
-    private backgroundColor = [
-        '#FF5722', // Deep Orange
-        '#3F51B5', // Indigo
-        '#2196F3', // Blue
-        '#F44336', // Red
-        '#FFEB3B', // Yellow
-        '#E91E63', // Pink
-        '#673AB7', // Deep purple
-        '#03A9F4', // Light Blue
-        '#FFC107', // Amber
-        '#009688', // Teal
-        '#4CAF50', // Green
-        '#8BC34A', // Light Green
-        '#CDDC39', // Lime
-        '#9C27B0', // Purple
-        '#FF9800', // Orange
-        '#00BCD4', // Cyan
-        '#795548'  // Brown
-    ];
     private subscriptions = new Array<ISubscription>();
     private _budgetPeriodSubject = new BehaviorSubject<BudgetPeriod>(new BudgetPeriod(Constant.DEFAULT_PERIOD));
     private _selectedPeriodSubject = new BehaviorSubject<Period>(Constant.DEFAULT_PERIOD);
@@ -108,10 +87,6 @@ export class DashService implements OnDestroy {
                 .subscribe(
                     data => this.calculateBudgetTotal()
                 ));
-    }
-
-    getChartColors(): Array<any> {
-        return [{ backgroundColor: _.shuffle(this.backgroundColor) }];
     }
 
     getBudgetNameFromKey(key: string): string {

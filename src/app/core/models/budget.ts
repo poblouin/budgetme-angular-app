@@ -14,6 +14,7 @@ export class Budget {
     budgetFrequency: BudgetFrequencyEnum;
     startDate: string;
     endDate: string;
+    colorDisplay: string;
 
     constructor(json: any) {
         this.id = json.id;
@@ -22,6 +23,7 @@ export class Budget {
         this.budgetFrequency = json.budget_frequency;
         this.startDate = json.start_date;
         this.endDate = json.end_date;
+        this.colorDisplay = json.color_display;
     }
 
     isActive(): boolean {
