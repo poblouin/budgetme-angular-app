@@ -90,10 +90,7 @@ export class TransactionCategoryService implements OnDestroy {
         );
     }
 
-    updateTransactionCategory(
-        updateTransactionCategory: TransactionCategory,
-        oldCategoryName: string,
-        oldBudgetName: string): Observable<TransactionCategory> {
+    updateTransactionCategory(updateTransactionCategory: TransactionCategory, oldBudgetName: string): Observable<TransactionCategory> {
         return this.apiService.put(API_PATH + `/${updateTransactionCategory.id}`, updateTransactionCategory).map(
             data => {
                 const newTransactionCategory = data.transaction_category;

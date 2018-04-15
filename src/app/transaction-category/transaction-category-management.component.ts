@@ -69,10 +69,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
             );
         } else {
             saveTransactionCategory.id = this.selectedTransactionCategory.id;
-            this.transactionCategoryService.updateTransactionCategory(
-                saveTransactionCategory,
-                this.selectedTransactionCategory.name,
-                this.oldBudgetName)
+            this.transactionCategoryService.updateTransactionCategory(saveTransactionCategory, this.oldBudgetName)
                 .subscribe(
                     tc => {
                         this.transactionService.updateTransactionCacheOnCategoryChange(
@@ -127,7 +124,7 @@ export class TransactionCategoryManagementComponent implements OnInit, OnDestroy
             values.budget = this.selectedTransactionCategory.budget.name;
         }
         this.transactionCategoryForm.reset(values);
-        this.oldBudgetName = '';
+        this.oldBudgetName = undefined;
     }
 
     onChangeBudget(budgetName: string): void {
