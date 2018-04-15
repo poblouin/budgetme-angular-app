@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ISubscription } from 'rxjs/Subscription';
 
-import _ = require('lodash');
+import * as _ from 'lodash';
 import { BudgetService } from './budget.service';
 import { Budget } from '../models/budget';
 
