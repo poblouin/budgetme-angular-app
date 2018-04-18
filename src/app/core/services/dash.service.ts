@@ -93,6 +93,10 @@ export class DashService implements OnDestroy {
         return key.split('_')[0];
     }
 
+    getDaysInMonth(): number {
+        return moment().daysInMonth();
+    }
+
     // TODO: Refactor
     private calculateBudgetTotal(): void {
         const period = this._selectedPeriodSubject.value;
@@ -109,7 +113,7 @@ export class DashService implements OnDestroy {
                 }
             });
         } else if (period === PeriodEnum.monthly) {
-            const daysInMonth = moment().daysInMonth();
+            const daysInMonth = this.getDaysInMonth();
             this.budgets.forEach(budget => {
                 if (budget.isActiveForMonth()) {
                     if (budget.budgetFrequency === BudgetFrequencyEnum.WEEKLY) {

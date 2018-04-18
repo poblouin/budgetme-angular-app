@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { ISubscription } from 'rxjs/Subscription';
 
-import { MatButton } from '@angular/material';
 import { BaseChartDirective } from 'ng2-charts';
-import { MatDialog } from '@angular/material/dialog';
 import 'chart.piecelabel.js';
 
 import { Budget } from '../../core/models/budget';
@@ -19,7 +17,6 @@ import { DashService, BudgetColorService } from '../../core/services';
 export class DashSummaryComponent implements OnInit, OnDestroy {
 
     @ViewChild(BaseChartDirective) private _chart;
-    @ViewChild('fabButton') private fabButton: MatButton;
     private summaryTotalSub: ISubscription;
     private budgetTotalSub: ISubscription;
 
@@ -47,8 +44,7 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     constructor(
         private dashService: DashService,
-        private budgetColorService: BudgetColorService,
-        public dialog: MatDialog
+        private budgetColorService: BudgetColorService
     ) { }
 
     ngOnInit(): void {
@@ -88,22 +84,6 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
 
     isRemainingNegative(): boolean {
         return (this.budgetTotal - this.budgetSpent) < 0;
-    }
-
-    createTransactionDialog(): void {
-        const budgetPeriod: BudgetPeriod = this.dashService.getBudgetPeriod();
-        const matDialogRef = this.dialog.open(TransactionDialogComponent, {
-            width: 'auto',
-            data: { periodStart: budgetPeriod.periodStart, periodEnd: budgetPeriod.periodEnd },
-            disableClose: true
-        });
-
-        // Little hack, otherwise the button stays focused.
-        matDialogRef.afterClosed().subscribe(() => {
-            this.fabButton._elementRef.nativeElement.classList.remove('cdk-focused');
-            this.fabButton._elementRef.nativeElement.classList.remove('cdk-program-focused');
-            this.fabButton._elementRef.nativeElement.classList.add('cdk-mouse-focused');
-        });
     }
 
     private calculateBudgets(): void {

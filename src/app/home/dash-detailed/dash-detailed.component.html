@@ -1,3 +1,29 @@
 <div class="dash-detailed">
-  Detailed
-</div>
+    <div class="row" style="display: block">
+      <ng-container *ngIf="summaryTransactions && summaryTransactions.size > 0; else elseTemplate">
+        <mat-card *ngFor="let detailedBudget of detailedBudgets" class="example-card">
+          <mat-card-header>
+            <mat-card-title>{{ detailedBudget.name }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ detailedBudget.budgetFrequency }} {{ detailedBudget.startDate !== null ? "( From " + detailedBudget.startDate + " to "
+              + detailedBudget.endDate + " )" : "( Always active )" }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-progress-bar
+              [ngClass]="getBudgetClass(detailedBudget)"
+              [value]="detailedBudget.percentageSpent">
+            </mat-progress-bar>
+          </mat-card-content>
+          <mat-card-footer>
+            {{ detailedBudget.totalSpent }} $ / {{ detailedBudget.budgetTotal }} $
+          </mat-card-footer>
+        </mat-card>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <!-- Better layout or empty chart -->
+        <p>No transactions for the current period.</p>
+      </ng-template>
+    </div>
+    <fab-button [dashService]="dashService"></fab-button>
+  </div>

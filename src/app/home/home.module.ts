@@ -7,7 +7,9 @@ import {
   MatTabsModule,
   MatButtonModule,
   MatIconModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatCardModule,
+  MatProgressBarModule
 } from '@angular/material';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 
@@ -18,6 +20,7 @@ import {
   HomeComponent,
   DashDetailedComponent,
   DashSummaryComponent,
+  FabButtonComponent,
 } from './index';
 
 const homeRouting: ModuleWithProviders = RouterModule.forChild([
@@ -40,12 +43,15 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    MatCardModule,
+    MatProgressBarModule,
     ChartsModule
   ],
   declarations: [
     HomeComponent,
     DashDetailedComponent,
-    DashSummaryComponent
+    DashSummaryComponent,
+    FabButtonComponent
   ],
   providers: [
     HomeResolver,

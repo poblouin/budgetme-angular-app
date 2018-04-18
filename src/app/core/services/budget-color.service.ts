@@ -13,7 +13,7 @@ const BUDGET_COLORS = [
     { color: '#FF5722', name: 'Deep Orange' },
     { color: '#3F51B5', name: 'Indigo' },
     { color: '#2196F3', name: 'Blue' },
-    { color: '#F44336', name: 'Red' },
+    // { color: '#F44336', name: 'Red' },
     { color: '#FFEB3B', name: 'Yellow' },
     { color: '#E91E63', name: 'Pink' },
     { color: '#673AB7', name: 'Deep purple' },

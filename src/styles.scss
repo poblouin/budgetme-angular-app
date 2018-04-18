@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "scss/theme.scss";
+
 // Not Found Component
 .not-found {
     padding: 15px;
@@ -59,6 +60,20 @@ nav.bg-primary {
             }
         }
     }
+
+    .dash-detailed {
+        padding: 20px;
+
+        .mat-card {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mat-card-footer {
+            text-align: center;
+        }
+    }
+
     .fab-button button {
         margin: 10px;
     }
@@ -115,4 +130,89 @@ body:not(.user-is-tabbing) input:focus,
 body:not(.user-is-tabbing) select:focus,
 body:not(.user-is-tabbing) textarea:focus {
     outline: none;
+}
+
+// Detailed budget colors.
+@mixin budget-color($fill, $buffer) {
+    .mat-progress-bar-fill::after {
+        background-color: $fill;
+    }
+    .mat-progress-bar-buffer {
+        background-color: $buffer;
+    }
+    .mat-progress-bar-background {
+        fill: white;
+    }
+}
+
+.budget-red {
+    @include budget-color(#F44336, rgba(244, 67, 54, 0.5));
+}
+
+.budget-deep-orange {
+    @include budget-color(#FF5722, rgba(255, 86, 34, 0.5));
+}
+
+.budget-indigo {
+    @include budget-color(#3F51B5, rgba(63, 81, 181, 0.5));
+}
+
+.budget-blue {
+    @include budget-color(#2196F3, rgba(33, 149, 243, 0.5));
+}
+
+.budget-blue {
+    @include budget-color(#2196F3, rgba(33, 149, 243, 0.5));
+}
+
+.budget-yellow {
+    @include budget-color(#FFEB3B, rgba(255, 235, 59, 0.5));
+}
+
+.budget-pink {
+    @include budget-color(#E91E63, rgba(233, 30, 98, 0.5));
+}
+
+.budget-deep-purple {
+    @include budget-color(#673AB7, rgba(104, 58, 183, 0.5));
+}
+
+.budget-light-blue {
+    @include budget-color(#03A9F4, rgba(3, 168, 244, 0.5));
+}
+
+.budget-amber {
+    @include budget-color(#FFC107, rgba(255, 193, 7, 0.5));
+}
+
+.budget-teal {
+    @include budget-color(#009688, #00968785);
+}
+
+.budget-green {
+    @include budget-color(#4CAF50, rgba(76, 175, 79, 0.5));
+}
+
+.budget-light-green {
+    @include budget-color(#8BC34A, rgba(139, 195, 74, 0.5));
+}
+
+.budget-lime {
+    @include budget-color(#CDDC39, rgba(204, 220, 57, 0.5));
+}
+
+.budget-purple {
+    @include budget-color(#9C27B0, rgba(155, 39, 176, 0.5));
+}
+
+.budget-orange {
+    @include budget-color(#FF9800, rgba(255, 153, 0, 0.5));
+}
+
+.budget-cyan {
+    @include budget-color(#00BCD4, rgba(0, 187, 212, 0.5));
+}
+
+.budget-brown {
+    @include budget-color(#795548, #79554871);
 }
