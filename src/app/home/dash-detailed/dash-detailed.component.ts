@@ -58,7 +58,7 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
 
     // TODO: This is ugly AF, but I did not manage to add the style with ngStyle directly in HTML.
     getBudgetClass(detailedBudget: any): any {
-        if (detailedBudget.percentageSpent > 100) {
+        if (Number(detailedBudget.percentageSpent) > 100) {
             return 'budget-red';
         }
         let colorClass = '';
@@ -140,7 +140,7 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
             const budget = this.budgets.find(b => b.name === budgetName);
             const budgetTotal = this.getBudgetTotalForPeriod(budget);
             let percentageSpent = 100;
-            if (budgetTotal !== 0 && total / budgetTotal < 1) {
+            if (budgetTotal !== 0) {
                 percentageSpent = (total / budgetTotal) * 100;
             }
 
