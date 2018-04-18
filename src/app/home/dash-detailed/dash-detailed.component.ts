@@ -16,33 +16,33 @@ import { NgSwitchCase } from '@angular/common';
 export class DashDetailedComponent implements OnInit, OnDestroy {
     private subscriptions = new Array<ISubscription>();
     private budgets: Array<Budget>;
-    private summaryTransactions: Map<string, number>;
 
+    public summaryTransactions: Map<string, number>;
     public detailedBudgets: Array<any>;
     public color = 'primary';
     public value = 60;
 
     constructor(
         private budgetService: BudgetService,
-        private dashService: DashService
+        public dashService: DashService
     ) { }
 
     ngOnInit() {
         this.subscriptions.push(this.dashService.summaryTransactions
             .filter(summaryTransactions => summaryTransactions.size > 0)
             .switchMap(
-            summaryTransactions => {
-                this.summaryTransactions = summaryTransactions;
-                return this.budgetService.budgets;
-            }
-        )
-        .filter(budgets => budgets.length > 0)
-        .subscribe(
-            budgets => {
-                this.budgets = budgets;
-                this.refreshBudgetCards();
-            }
-        )
+                summaryTransactions => {
+                    this.summaryTransactions = summaryTransactions;
+                    return this.budgetService.budgets;
+                }
+            )
+            .filter(budgets => budgets.length > 0)
+            .subscribe(
+                budgets => {
+                    this.budgets = budgets;
+                    this.refreshBudgetCards();
+                }
+            )
         );
 
         this.subscriptions.push(this.budgetService.budgets.subscribe(
@@ -65,72 +65,72 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
 
         switch (detailedBudget.color) {
             case '#FF5722': {
-               colorClass = 'budget-deep-orange';
-               break;
+                colorClass = 'budget-deep-orange';
+                break;
             }
             case '#3F51B5': {
                 colorClass = 'budget-indigo';
                 break;
-             }
-             case '#2196F3': {
+            }
+            case '#2196F3': {
                 colorClass = 'budget-blue';
                 break;
-             }
-             case '#FFEB3B': {
+            }
+            case '#FFEB3B': {
                 colorClass = 'budget-yellow';
                 break;
-             }
-             case '#E91E63': {
+            }
+            case '#E91E63': {
                 colorClass = 'budget-pink';
                 break;
-             }
-             case '#673AB7': {
+            }
+            case '#673AB7': {
                 colorClass = 'budget-deep-purple';
                 break;
-             }
-             case '#03A9F4': {
+            }
+            case '#03A9F4': {
                 colorClass = 'budget-light-blue';
                 break;
-             }
-             case '#FFC107': {
+            }
+            case '#FFC107': {
                 colorClass = 'budget-amber';
                 break;
-             }
-             case '#009688': {
+            }
+            case '#009688': {
                 colorClass = 'budget-teal';
                 break;
-             }
-             case '#4CAF50': {
+            }
+            case '#4CAF50': {
                 colorClass = 'budget-green';
                 break;
-             }
-             case '8BC34A': {
+            }
+            case '8BC34A': {
                 colorClass = 'budget-light-green';
                 break;
-             }
-             case '##CDDC39': {
+            }
+            case '##CDDC39': {
                 colorClass = 'budget-lime';
                 break;
-             }
-             case '#9C27B0': {
+            }
+            case '#9C27B0': {
                 colorClass = 'budget-purple';
                 break;
-             }
-             case '#FF9800': {
+            }
+            case '#FF9800': {
                 colorClass = 'budget-orange';
                 break;
-             }
-             case '#00BCD4': {
+            }
+            case '#00BCD4': {
                 colorClass = 'budget-cyan';
                 break;
-             }
-             case '#795548': {
+            }
+            case '#795548': {
                 colorClass = 'budget-brown';
                 break;
-             }
-         }
+            }
+        }
 
-         return colorClass;
+        return colorClass;
     }
 
     private refreshBudgetCards(): any {

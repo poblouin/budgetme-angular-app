@@ -43,8 +43,8 @@ export class DashSummaryComponent implements OnInit, OnDestroy {
     public budgetRemainingFormatted: string;
 
     constructor(
-        private dashService: DashService,
-        private budgetColorService: BudgetColorService
+        private budgetColorService: BudgetColorService,
+        public dashService: DashService
     ) { }
 
     ngOnInit(): void {
