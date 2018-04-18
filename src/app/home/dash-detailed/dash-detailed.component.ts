@@ -141,7 +141,7 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
             const budgetTotal = this.getBudgetTotalForPeriod(budget);
             let percentageSpent = 100;
             if (budgetTotal !== 0 && total / budgetTotal < 1) {
-                percentageSpent = total / budgetTotal * 100;
+                percentageSpent = (total / budgetTotal) * 100;
             }
 
             newDetailedBudgets.push({
