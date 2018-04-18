@@ -58,7 +58,7 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
 
     // TODO: This is ugly AF, but I did not manage to add the style with ngStyle directly in HTML.
     getBudgetClass(detailedBudget: any): any {
-        if (detailedBudget.percentageSpent >= 100) {
+        if (detailedBudget.percentageSpent > 100) {
             return 'budget-red';
         }
         let colorClass = '';
