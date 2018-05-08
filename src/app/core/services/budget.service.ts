@@ -1,8 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { ISubscription } from 'rxjs/Subscription';
+import { BehaviorSubject ,  Observable ,  SubscriptionLike as ISubscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ApiService } from '../../shared/services/api.service';

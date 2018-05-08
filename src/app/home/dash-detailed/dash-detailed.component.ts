@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 
 import { BudgetService } from 'app/core/services/budget.service';
 import { Budget } from 'app/core/models/budget';

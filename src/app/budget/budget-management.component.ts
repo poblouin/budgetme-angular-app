@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { Budget, BudgetFrequencyEnum } from '../core/models/budget';
 import { BudgetService, BudgetMeToastrService, TransactionService, BudgetColorService } from '../core';
-import { ISubscription } from 'rxjs/Subscription';
+import { SubscriptionLike as ISubscription } from 'rxjs';
 import { ConfirmDialogComponent } from '../shared/components/confirm-dialog.component';
 
 @Component({

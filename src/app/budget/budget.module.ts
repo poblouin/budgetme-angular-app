@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectModule, MatButtonModule } from '@angular/material';
 
 import { AuthGuard } from '../shared';
 import { BudgetService } from '../core';
@@ -24,8 +24,9 @@ const budgetRouting: ModuleWithProviders = RouterModule.forChild([
     imports: [
         budgetRouting,
         CommonModule,
+        ReactiveFormsModule,
         MatSelectModule,
-        ReactiveFormsModule
+        MatButtonModule,
     ],
     exports: [],
     providers: [

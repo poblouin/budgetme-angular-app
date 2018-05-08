@@ -23,9 +23,9 @@
         </label>
       </div>
       <div class="form-controls">
-        <button type="button" (click)="onSubmit()" [disabled]="transactionCategoryForm.pristine" class="btn btn-success space-right">Save</button>
-        <button type="button" (click)="revert()" [disabled]="transactionCategoryForm.pristine" class="btn btn-danger">Reset</button>
-        <button type="button" (click)="deleteTransactionCategory()" [disabled]="!selectedTransactionCategory" class="btn btn-danger">Delete</button>
+        <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="transactionCategoryForm.pristine" class="space-right">Save</button>
+        <button mat-raised-button color="warn" (click)="revert()" [disabled]="transactionCategoryForm.pristine">Reset</button>
+        <button mat-raised-button color="warn" (click)="deleteTransactionCategory()" [disabled]="!selectedTransactionCategory">Delete</button>
       </div>
     </form>
 

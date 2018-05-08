@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectModule, MatButtonModule } from '@angular/material';
 
 import { AuthGuard } from '../shared';
 import { TransactionCategoryService } from '../core';
@@ -25,8 +25,9 @@ const transactionCategoryRouting: ModuleWithProviders = RouterModule.forChild([
     imports: [
         transactionCategoryRouting,
         CommonModule,
-        MatSelectModule,
         ReactiveFormsModule,
+        MatSelectModule,
+        MatButtonModule,
         SharedModule
     ],
     exports: [],

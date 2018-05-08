@@ -1,10 +1,9 @@
 import { Injectable, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { BehaviorSubject ,  ReplaySubject } from 'rxjs';
+
+
 
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';

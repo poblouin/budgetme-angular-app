@@ -1,9 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ISubscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  SubscriptionLike as ISubscription ,  Observable } from 'rxjs';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 

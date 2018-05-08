@@ -1,7 +1,7 @@
+
+import {throwError as observableThrowError,  Observable ,  BehaviorSubject ,  SubscriptionLike as ISubscription } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
@@ -15,7 +15,6 @@ import { TransactionService } from './transaction.service';
 import { BudgetMeToastrService } from './toastr.service';
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetPeriod } from '../../shared/models/budget-period';
-import { ISubscription } from 'rxjs/Subscription';
 
 
 @Injectable()
@@ -138,7 +137,7 @@ export class DashService implements OnDestroy {
             if (budget === undefined) {
                 const msg = 'Unexpected error while calculating the transactions, please try again.';
                 this.budgetMeToastrService.showError(msg);
-                Observable.throw(new Error(msg));
+                observableThrowError(new Error(msg));
             }
 
             const key = this.createSummaryKey(budgetName);

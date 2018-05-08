@@ -45,9 +45,9 @@
         </label>
       </div>              
       <div class="form-controls">
-        <button type="button" (click)="onSubmit()" [disabled]="budgetForm.pristine" class="btn btn-success space-right">Save</button>
-        <button type="button" (click)="revert()" [disabled]="budgetForm.pristine" class="btn btn-danger">Reset</button>
-        <button type="button" (click)="deleteBudget()" [disabled]="!selectedBudget" class="btn btn-danger">Delete</button>
+        <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="budgetForm.pristine" class="space-right">Save</button>
+        <button mat-raised-button color="warn" (click)="revert()" [disabled]="budgetForm.pristine" >Reset</button>
+        <button mat-raised-button color="warn" (click)="deleteBudget()" [disabled]="!selectedBudget">Delete</button>
       </div>
 
     </form>

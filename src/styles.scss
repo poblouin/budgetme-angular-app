@@ -85,8 +85,9 @@ nav.bg-primary {
     flex-direction: column;
     min-width: 300px;
     .mat-table {
+        padding-left: 35px;
         overflow: auto;
-        max-height: 700px;
+        max-height: 650px;
         @media (max-width: 991px) {
             max-height: 450px;
         }
