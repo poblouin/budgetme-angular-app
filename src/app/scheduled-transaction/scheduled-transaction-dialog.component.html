@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<div mat-dialog-content>
+  <form [formGroup]="transactionForm" autocomplete="off">
+    <div class="form-group">
+      <label class="center-block">Amount:
+        <input data-lpignore="true" type="number" class="form-control" formControlName="amount">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">Description:
+        <input data-lpignore="true" class="form-control" formControlName="description">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">Frequency:
+        <select class="form-control" formControlName="frequency">
+          <option *ngFor="let key of scheduledTransactionFreqKeys" [value]="scheduledTransactionFrequencies[key]">{{ scheduledTransactionFrequencies[key] }}</option>
+        </select>
+      </label>
+    </div>    
+    <div class="form-group">
+      <label class="center-block">Start Date:
+        <input data-lpignore="true" type="date" class="form-control" formControlName="startDate">
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="center-block">End Date:
+        <input data-lpignore="true" type="date" class="form-control" formControlName="endDate">
+      </label>
+    </div>        
+    <div class="form-group">
+      <label class="center-block">Transaction Category:
+        <select class="form-control" formControlName="transactionCategory">
+          <option *ngFor="let tc of transactionCategories | activeTransactionCategory" [ngValue]="tc">{{ tc.name }} - ({{ tc.budget.name }})</option>
+        </select>
+      </label>
+    </div>
+  </form>
+</div>
+<ng-container *ngIf="isEdit; else elseTemplate">
+  <div mat-dialog-actions>
+    <button type="button" class="btn btn-success" (click)="updateScheduledTransaction()">Save</button>
+    <button type="button" class="btn btn-danger" (click)="deleteScheduledTransaction()">Delete</button>
+    <button type="button" class="btn btn-danger" mat-dialog-close>Cancel</button>
+  </div>
+</ng-container>
+<ng-template #elseTemplate>
+  <div mat-dialog-actions>
+    <button type="button" class="btn btn-success" (click)="saveScheduledTransaction()">Save</button>
+    <button type="button" class="btn btn-danger" mat-dialog-close>Cancel</button>
+  </div>
+</ng-template>

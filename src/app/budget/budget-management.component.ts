@@ -84,7 +84,7 @@ export class BudgetManagementComponent implements OnInit, OnDestroy {
         this.subscriptions.push(matDialogRef.beforeClose().subscribe(confirm => {
             if (confirm) {
                 this.budgetService.deleteBudget(this.selectedBudget).subscribe(
-                    budget => {
+                    _ => {
                         this.selectedBudget = undefined;
                         this.revert();
                     },

@@ -1,46 +1,43 @@
-<!-- Period + Total header -->
-<budget-heading [showAmount]="false" [transactionTotalFormatted]="transactionTotalFormatted"></budget-heading>
-
 <!-- Transaction table -->
 <ng-container *ngIf="dataSource.data && dataSource.data.length > 0; else elseTemplate">
-  <div class="transaction-management">
+  <div class="scheduled-transaction-management">
     <div class="mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
 
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef mat-sort-header [hidden]="true"> Id </mat-header-cell>
-          <mat-cell *matCellDef="let transaction" [hidden]="true"> {{ transaction.id }} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="date">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
-          <mat-cell *matCellDef="let transaction"> {{ transaction.date }} </mat-cell>
+          <mat-cell *matCellDef="let scheduledTransaction" [hidden]="true"> {{ scheduledTransaction.id }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="amount">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Amount </mat-header-cell>
-          <mat-cell *matCellDef="let transaction"> {{ transaction.amount }} $</mat-cell>
+          <mat-cell *matCellDef="let scheduledTransaction"> {{ scheduledTransaction.amount }} $</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="description">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
-          <mat-cell *matCellDef="let transaction"> {{ transaction.description }} </mat-cell>
+          <mat-cell *matCellDef="let scheduledTransaction"> {{ scheduledTransaction.description }} </mat-cell>
         </ng-container>
+
+        <ng-container matColumnDef="frequency">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Frequency </mat-header-cell>
+            <mat-cell *matCellDef="let scheduledTransaction"> {{ scheduledTransaction.frequency }} </mat-cell>
+          </ng-container>
+
+        <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+            <mat-cell *matCellDef="let scheduledTransaction"> {{ scheduledTransaction.startDate }} </mat-cell>
+          </ng-container>
 
         <ng-container matColumnDef="category">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
-          <mat-cell *matCellDef="let transaction"> {{ transaction.transactionCategory.name }} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="budget">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Budget </mat-header-cell>
-          <mat-cell *matCellDef="let transaction"> {{ transaction.transactionCategory.budget.name }} </mat-cell>
+          <mat-cell *matCellDef="let scheduledTransaction"> {{ scheduledTransaction.transactionCategory.name }} </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;" 
           [ngClass]="{ 'hover': isRowHover(row) }" 
-          (click)="createTransactionDialog()"
+          (click)="createScheduledTransactionDialog()"
           on-mouseenter='onMouseEnter(row)' 
           on-mouseleave='onMouseLeave(row)'>
         </mat-row>
@@ -49,5 +46,5 @@
   </div>
 </ng-container>
 <ng-template #elseTemplate>
-  <p>You have no transaction for the current period, please spend money (or not).</p>
+  <p>You have no scheduled transaction yet.</p>
 </ng-template>

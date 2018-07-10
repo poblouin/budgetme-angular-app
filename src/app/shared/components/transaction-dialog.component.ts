@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -18,7 +18,6 @@ import {
 })
 export class TransactionDialogComponent implements OnInit, OnDestroy {
     private transactionCategoriesSub: ISubscription;
-    private selectedTransactionCategory: TransactionCategory;
 
     public title: string;
     public isEdit: boolean;

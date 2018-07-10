@@ -6,17 +6,17 @@ import { UserService } from '../shared';
 
 @Injectable()
 export class NoAuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private userService: UserService
-  ) {}
+    constructor(
+        private router: Router,
+        private userService: UserService
+    ) { }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> {
+    canActivate(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): Observable<boolean> {
 
-    return this.userService.isAuthenticated.take(1).map(bool => !bool);
+        return this.userService.isAuthenticated.take(1).map(bool => !bool);
 
-  }
+    }
 }

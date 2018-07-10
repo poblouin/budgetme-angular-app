@@ -4,6 +4,7 @@ import {
     BudgetMeToastrService,
     TransactionCategoryService,
     TransactionService,
+    ScheduledTransactionService,
     DashService,
     BudgetColorService
 } from './index';
@@ -16,6 +17,7 @@ import {
         BudgetMeToastrService,
         TransactionCategoryService,
         TransactionService,
+        ScheduledTransactionService,
         DashService,
         BudgetColorService
     ],

@@ -1,10 +1,22 @@
-<div class="fab-button">
-  <button
-    #fabButton
-    class="float-right" 
-    mat-fab color="accent" 
-    (click)="createTransactionDialog()"
-    matTooltip="New Transaction" 
-    matTooltipPosition="left"><mat-icon>attach_money</mat-icon>
-  </button>
-</div>
+<div class="speed-dial-wrapper">
+    <button mat-fab
+        [@preventInitialAnimation]
+        [satPopoverAnchorFor]="dial"
+        (click)="dial.toggle()">
+      <mat-icon [@spinInOut]="'in'" *ngIf="dial.isOpen()">close</mat-icon>
+      <mat-icon [@spinInOut]="'in'" *ngIf="!dial.isOpen()">attach_money</mat-icon>
+    </button>
+    <sat-popover #dial verticalAlign="above">
+      <div class="dial">
+        <ng-container *ngFor="let a of actions">
+          <button mat-mini-fab
+              color="primary"
+              (click)="createDialog(a.type)"
+              matTooltip={{a.name}}
+              matTooltipPosition="left">
+            <mat-icon>{{a.icon}}</mat-icon>
+          </button>
+        </ng-container>
+      </div>
+    </sat-popover>
+  </div>

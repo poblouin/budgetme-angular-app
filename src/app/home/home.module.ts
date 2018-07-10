@@ -12,6 +12,7 @@ import {
   MatProgressBarModule
 } from '@angular/material';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { SatPopoverModule } from '@ncstate/sat-popover';
 
 import { SharedModule } from '../shared/shared.module';
 import { DashService } from '../core';
@@ -45,7 +46,8 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
     MatTooltipModule,
     MatCardModule,
     MatProgressBarModule,
-    ChartsModule
+    ChartsModule,
+    SatPopoverModule,
   ],
   declarations: [
     HomeComponent,

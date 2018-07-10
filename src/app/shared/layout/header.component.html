@@ -25,6 +25,11 @@
           Transactions
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/scheduled-transaction" (click)="collapseNav()" routerLinkActive="active">
+          Scheduled Transactions
+        </a>
+      </li>      
     </ul>
     <ul *showAuthed="false" class="nav navbar-nav ml-auto justify-content-end">
       <li class="nav-item">

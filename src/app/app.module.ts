@@ -6,7 +6,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 
-import { environment } from 'environments/environment';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { HomeModule } from './home/home.module';
@@ -16,6 +15,7 @@ import { SharedModule } from './shared/shared.module';
 import { BudgetModule } from './budget/budget.module';
 import { TransactionCategoryModule } from './transaction-category/transaction-category.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { ScheduledTransactionModule } from './scheduled-transaction/scheduled-transaction.module';
 import {
     ApiService,
     AuthGuard,
@@ -53,7 +53,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([
         CoreModule,
         BudgetModule,
         TransactionCategoryModule,
-        TransactionModule
+        TransactionModule,
+        ScheduledTransactionModule
     ],
 
     providers: [

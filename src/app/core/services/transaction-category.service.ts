@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
 import { BehaviorSubject ,  Observable ,  SubscriptionLike as ISubscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';

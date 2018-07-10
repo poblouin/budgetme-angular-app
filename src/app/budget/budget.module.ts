@@ -11,11 +11,11 @@ import { BudgetManagementComponent } from './budget-management.component';
 
 const budgetRouting: ModuleWithProviders = RouterModule.forChild([
     {
-      path: 'budget',
-      component: BudgetManagementComponent,
-      canActivate: [AuthGuard]
+        path: 'budget',
+        component: BudgetManagementComponent,
+        canActivate: [AuthGuard]
     }
-  ]);
+]);
 
 @NgModule({
     declarations: [
@@ -33,4 +33,4 @@ const budgetRouting: ModuleWithProviders = RouterModule.forChild([
         BudgetService
     ],
 })
-export class BudgetModule {}
+export class BudgetModule { }
