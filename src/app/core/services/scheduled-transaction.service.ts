@@ -5,6 +5,7 @@ import {
     SubscriptionLike as ISubscription,
     Observable
 } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 import { ScheduledTransaction } from 'app/core/models/scheduled-transaction';
 import { TransactionCategory } from 'app/core/models/transaction-category';
@@ -28,7 +29,9 @@ export class ScheduledTransactionService implements OnDestroy {
         private budgetMeToastrService: BudgetMeToastrService
     ) {
         this.subscriptions.push(this.transactionCategoryService.transactionCategories
-            .filter(transactionCategories => transactionCategories.size > 0)
+            .pipe(
+                filter(transactionCategories => transactionCategories.size > 0)
+            )
             .subscribe(
                 transactionCategories => {
                     const arr = new Array<TransactionCategory>();
@@ -48,65 +51,76 @@ export class ScheduledTransactionService implements OnDestroy {
     getScheduledTransactions(isInit?: boolean): Observable<Array<ScheduledTransaction>> {
         if (isInit) {
             return this.apiService.get(API_PATH)
-                .map(
-                    data => {
-                        const arr = new Array<ScheduledTransaction>();
-                        data.scheduled_transactions.forEach(element => {
-                            const transactionCategory = this.transactionCategories.find(tc => tc.id === element.transaction_category.id);
-                            arr.push(new ScheduledTransaction(element, transactionCategory));
-                        });
-                        this._scheduledTransactionSubject.next(arr);
-                        return arr;
-                    },
-                    err => this.budgetMeToastrService.showError(err)
-                );
+                .pipe(
+                    map(
+                        data => {
+                            const arr = new Array<ScheduledTransaction>();
+                            data.scheduled_transactions.forEach(element => {
+                                const transactionCategory = this.transactionCategories.find(tc => tc.id === element.transaction_category.id);
+                                arr.push(new ScheduledTransaction(element, transactionCategory));
+                            });
+                            this._scheduledTransactionSubject.next(arr);
+                            return arr;
+                        },
+                        err => this.budgetMeToastrService.showError(err)
+                    )
+                )
         } else {
             return this.scheduledTransactions;
         }
     }
 
     createScheduledTransaction(saveScheduledTransaction: ScheduledTransaction): Observable<ScheduledTransaction> {
-        return this.apiService.post(API_PATH, saveScheduledTransaction).map(
-            data => {
-                const st = data.scheduled_transaction;
-                const transactionCategory = this.transactionCategories.find(tc => tc.id === st.id);
-                const scheduledTransaction = new ScheduledTransaction(st, transactionCategory);
-                const arr = this._scheduledTransactionSubject.value;
-                arr.push(scheduledTransaction);
-                this._scheduledTransactionSubject.next(arr);
-                this.budgetMeToastrService.showSuccess('Scheduled Transaction created');
-                return scheduledTransaction;
-            }
-        );
+        return this.apiService.post(API_PATH, saveScheduledTransaction)
+            .pipe(
+                map(
+                    data => {
+                        const st = data.scheduled_transaction;
+                        const transactionCategory = this.transactionCategories.find(tc => tc.id === st.id);
+                        const scheduledTransaction = new ScheduledTransaction(st, transactionCategory);
+                        const arr = this._scheduledTransactionSubject.value;
+                        arr.push(scheduledTransaction);
+                        this._scheduledTransactionSubject.next(arr);
+                        this.budgetMeToastrService.showSuccess('Scheduled Transaction created');
+                        return scheduledTransaction;
+                    }
+                )
+            )
     }
 
     updateScheduledTransaction(updateScheduledTransaction: ScheduledTransaction): Observable<ScheduledTransaction> {
-        return this.apiService.put(API_PATH + `/${updateScheduledTransaction.id}`, updateScheduledTransaction).map(
-            data => {
-                const st = data.scheduled_transaction;
-                const transactionCategory = this.transactionCategories.find(tc => tc.id === st.id);
-                const scheduledTransaction = new ScheduledTransaction(st, transactionCategory);
-                const arr = this._scheduledTransactionSubject.value;
-                const index = arr.findIndex(b => b.id === updateScheduledTransaction.id);
-                arr[index] = scheduledTransaction;
-                this._scheduledTransactionSubject.next(arr);
-                this.budgetMeToastrService.showSuccess('Scheduled Transaction updated');
-                return scheduledTransaction;
-            }
-        );
+        return this.apiService.put(API_PATH + `/${updateScheduledTransaction.id}`, updateScheduledTransaction)
+            .pipe(
+                map(
+                    data => {
+                        const st = data.scheduled_transaction;
+                        const transactionCategory = this.transactionCategories.find(tc => tc.id === st.id);
+                        const scheduledTransaction = new ScheduledTransaction(st, transactionCategory);
+                        const arr = this._scheduledTransactionSubject.value;
+                        const index = arr.findIndex(b => b.id === updateScheduledTransaction.id);
+                        arr[index] = scheduledTransaction;
+                        this._scheduledTransactionSubject.next(arr);
+                        this.budgetMeToastrService.showSuccess('Scheduled Transaction updated');
+                        return scheduledTransaction;
+                    }
+                )
+            )
     }
 
     deleteScheduledTransaction(deleteScheduledTransaction: ScheduledTransaction): Observable<ScheduledTransaction> {
-        return this.apiService.delete(API_PATH + `/${deleteScheduledTransaction.id}`).map(
-            data => {
-                const arr = this._scheduledTransactionSubject.value;
-                const index = arr.findIndex(b => b.id === deleteScheduledTransaction.id);
-                arr.splice(index, 1);
-                this._scheduledTransactionSubject.next(arr);
-                this.budgetMeToastrService.showSuccess('Scheduled Transaction deleted');
-                return data;
-            }
-        );
+        return this.apiService.delete(API_PATH + `/${deleteScheduledTransaction.id}`)
+            .pipe(
+                map(
+                    data => {
+                        const arr = this._scheduledTransactionSubject.value;
+                        const index = arr.findIndex(b => b.id === deleteScheduledTransaction.id);
+                        arr.splice(index, 1);
+                        this._scheduledTransactionSubject.next(arr);
+                        this.budgetMeToastrService.showSuccess('Scheduled Transaction deleted');
+                        return data;
+                    }
+                )
+            )
     }
 
 }

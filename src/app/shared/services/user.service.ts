@@ -1,9 +1,8 @@
-import { Injectable, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Rx';
-import { BehaviorSubject ,  ReplaySubject } from 'rxjs';
+import { Injectable, } from '@angular/core';
 
-
+import { map, mergeMap, distinctUntilChanged } from 'rxjs/operators';
+import { Observable ,  BehaviorSubject ,  ReplaySubject } from 'rxjs';
 
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
@@ -15,7 +14,7 @@ export class UserService {
     private currentUserSubject = new BehaviorSubject<User>(new User());
     private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
 
-    public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
+    public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
     public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
     constructor(
@@ -45,24 +44,24 @@ export class UserService {
     }
 
     login(credentials: Object): Observable<User> {
-        return this.obtainToken(credentials).flatMap(
+        return this.obtainToken(credentials).pipe(mergeMap(
             res => {
-                return this.apiService.get('/user').map(
+                return this.apiService.get('/user').pipe(map(
                     data => {
                         this.setUser(data.user);
                         return data;
                     },
                     err => this.removeUser()
-                );
+                ));
             }
-        );
+        ));
     }
 
     register(credentials: Object): Observable<User> {
-        return this.apiService.post('/users', { user: credentials }).flatMap(
+        return this.apiService.post('/users', { user: credentials }).pipe(mergeMap(
             data => {
                 this.setUser(data.user);
-                return this.obtainToken(credentials).map(
+                return this.obtainToken(credentials).pipe(map(
                     hasToken => {
                         if (!hasToken) {
                             this.removeUser();
@@ -71,18 +70,18 @@ export class UserService {
                             return data;
                         }
                     }
-                );
+                ));
             }
-        );
+        ));
     }
 
     update(user): Observable<User> {
-        return this.apiService.put('/user', { user }).map(
+        return this.apiService.put('/user', { user }).pipe(map(
             data => {
                 this.currentUserSubject.next(data.user);
                 return data.user;
             }
-        );
+        ));
     }
 
     private setUser(user: User) {
@@ -91,13 +90,13 @@ export class UserService {
     }
 
     private obtainToken(credentials: Object): Observable<Boolean> {
-        return this.apiService.post('/token', credentials).map(
+        return this.apiService.post('/token', credentials).pipe(map(
             data => {
                 this.jwtService.saveToken(data);
                 return true;
             },
             err => false
-        );
+        ));
     }
 
 }

@@ -1,5 +1,7 @@
+
 import { Injectable, OnDestroy } from '@angular/core';
 
+import { filter,  map } from 'rxjs/operators';
 import { BehaviorSubject ,  Observable ,  SubscriptionLike as ISubscription } from 'rxjs';
 
 import { ApiService } from '../../shared/services/api.service';
@@ -23,8 +25,8 @@ export class TransactionCategoryService implements OnDestroy {
         private budgetMeToastrService: BudgetMeToastrService,
         private budgetService: BudgetService
     ) {
-        this.subscriptions.push(this.budgetService.budgets
-            .filter(budgets => budgets.length > 0)
+        this.subscriptions.push(this.budgetService.budgets.pipe(
+            filter(budgets => budgets.length > 0))
             .subscribe(
                 budgets => {
                     this.budgets = budgets;
@@ -41,8 +43,8 @@ export class TransactionCategoryService implements OnDestroy {
 
     getTransactionCategories(isInit?: boolean): Observable<Map<string, Array<TransactionCategory>>> {
         if (isInit) {
-            return this.apiService.get(API_PATH)
-                .map(
+            return this.apiService.get(API_PATH).pipe(
+                map(
                     data => {
                         const newM = new Map<string, Array<TransactionCategory>>();
                         data.transaction_categories.forEach(element => {
@@ -60,14 +62,14 @@ export class TransactionCategoryService implements OnDestroy {
                         return newM;
                     },
                     err => this.budgetMeToastrService.showError(err)
-                );
+                ));
         } else {
             return this.transactionCategories;
         }
     }
 
     createTransactionCategory(saveTransactionCat: TransactionCategory): Observable<TransactionCategory> {
-        return this.apiService.post(API_PATH, saveTransactionCat).map(
+        return this.apiService.post(API_PATH, saveTransactionCat).pipe(map(
             data => {
                 const newTransactionCategory = data.transaction_category;
                 const budget = this.budgets.find(b => b.id === newTransactionCategory.budget.id);
@@ -85,11 +87,11 @@ export class TransactionCategoryService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction category created');
                 return transactionCategory;
             }
-        );
+        ));
     }
 
     updateTransactionCategory(updateTransactionCategory: TransactionCategory, oldBudgetName: string): Observable<TransactionCategory> {
-        return this.apiService.put(API_PATH + `/${updateTransactionCategory.id}`, updateTransactionCategory).map(
+        return this.apiService.put(API_PATH + `/${updateTransactionCategory.id}`, updateTransactionCategory).pipe(map(
             data => {
                 const newTransactionCategory = data.transaction_category;
                 const budget = this.budgets.find(b => b.id === newTransactionCategory.budget.id);
@@ -114,11 +116,11 @@ export class TransactionCategoryService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction category updated');
                 return transactionCategory;
             }
-        );
+        ));
     }
 
     deleteTransactionCategory(deleteTransactionCategory: TransactionCategory): Observable<TransactionCategory> {
-        return this.apiService.delete(API_PATH + `/${deleteTransactionCategory.id}`).map(
+        return this.apiService.delete(API_PATH + `/${deleteTransactionCategory.id}`).pipe(map(
             data => {
                 const transactionMap = this._transactionCatSubject.value;
                 const index = transactionMap.get(deleteTransactionCategory.budget.name)
@@ -129,7 +131,7 @@ export class TransactionCategoryService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction category deleted');
                 return data;
             }
-        );
+        ));
     }
 
 }

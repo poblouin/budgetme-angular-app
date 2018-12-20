@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Rx';
+import { throwError as observableThrowError, empty as observableEmpty,  Observable } from 'rxjs';
+import { shareReplay, map, switchMap, catchError } from 'rxjs/operators';
 
 import { JwtService } from './services/jwt.service';
 import { UserService } from './services/user.service';
@@ -23,22 +24,22 @@ export class JwtInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
         request = this.setHeaders(request);
 
-        return next.handle(request).catch(error => {
+        return next.handle(request).pipe(catchError(error => {
 
             if (error.status === 401 && !request.url.includes('refresh')) {
-                return this.refreshToken()
-                    .switchMap(() => {
+                return this.refreshToken().pipe(
+                    switchMap(() => {
                         request = this.setHeaders(request);
                         return next.handle(request);
-                    })
-                    .catch(() => {
+                    }),
+                    catchError(() => {
                         this.logout();
-                        return Observable.empty();
-                    });
+                        return observableEmpty();
+                    }),);
             }
 
-            return Observable.throw(error);
-        });
+            return observableThrowError(error);
+        }));
     }
 
     private setHeaders(request) {
@@ -54,9 +55,9 @@ export class JwtInterceptor implements HttpInterceptor {
     }
 
     private refreshToken(): Observable<any> {
-        return this.apiService.post('/token/refresh', { refresh: this.jwtService.getRefreshToken() })
-            .map(data => this.jwtService.saveToken(data))
-            .shareReplay();
+        return this.apiService.post('/token/refresh', { refresh: this.jwtService.getRefreshToken() }).pipe(
+            map(data => this.jwtService.saveToken(data)),
+            shareReplay(),);
     }
 
     private logout() {

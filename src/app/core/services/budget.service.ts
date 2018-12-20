@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
 import { BehaviorSubject ,  Observable ,  SubscriptionLike as ISubscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ApiService } from '../../shared/services/api.service';
 import { BudgetMeToastrService } from './toastr.service';
@@ -28,8 +29,8 @@ export class BudgetService implements OnDestroy {
 
     getBudgets(isInit?: boolean): Observable<Array<Budget>> {
         if (isInit) {
-            return this.apiService.get(API_PATH)
-                .map(
+            return this.apiService.get(API_PATH).pipe(
+                map(
                 data => {
                     const arr = new Array<Budget>();
                     data.budgets.forEach(element => {
@@ -40,14 +41,14 @@ export class BudgetService implements OnDestroy {
                     return arr;
                 },
                 err => this.budgetMeToastrService.showError(err)
-            );
+            ));
         } else {
             return this.budgets;
         }
     }
 
     createBudget(saveBudget: Budget): Observable<Budget> {
-        return this.apiService.post(API_PATH, saveBudget).map(
+        return this.apiService.post(API_PATH, saveBudget).pipe(map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
@@ -56,11 +57,11 @@ export class BudgetService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Budget created');
                 return budget;
             }
-        );
+        ));
     }
 
     updateBudget(updateBudget: Budget): Observable<Budget> {
-        return this.apiService.put(API_PATH + `/${updateBudget.id}`, updateBudget).map(
+        return this.apiService.put(API_PATH + `/${updateBudget.id}`, updateBudget).pipe(map(
             data => {
                 const budget = new Budget(data.budget);
                 const arr = this._budgetSubject.value;
@@ -70,11 +71,11 @@ export class BudgetService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Budget updated');
                 return budget;
             }
-        );
+        ));
     }
 
     deleteBudget(deleteBudget: Budget): Observable<Budget> {
-        return this.apiService.delete(API_PATH + `/${deleteBudget.id}`).map(
+        return this.apiService.delete(API_PATH + `/${deleteBudget.id}`).pipe(map(
             data => {
                 const arr = this._budgetSubject.value;
                 const index = arr.findIndex(b => b.id === deleteBudget.id);
@@ -83,7 +84,7 @@ export class BudgetService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Budget deleted');
                 return data;
             }
-        );
+        ));
     }
 
 }

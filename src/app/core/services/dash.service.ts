@@ -1,5 +1,7 @@
 
-import {throwError as observableThrowError,  Observable ,  BehaviorSubject ,  SubscriptionLike as ISubscription } from 'rxjs';
+import {of as observableOf, throwError as observableThrowError,  Observable ,  BehaviorSubject ,  SubscriptionLike as ISubscription } from 'rxjs';
+
+import {distinctUntilChanged} from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import * as moment from 'moment';
@@ -29,8 +31,8 @@ export class DashService implements OnDestroy {
     private transactionCategories: Map<string, Array<TransactionCategory>>;
 
     public readonly budgetPeriod = this._budgetPeriodSubject.asObservable();
-    public readonly selectedPeriod = this._selectedPeriodSubject.asObservable().distinctUntilChanged();
-    public readonly budgetTotal = this._budgetTotal.asObservable().distinctUntilChanged();
+    public readonly selectedPeriod = this._selectedPeriodSubject.asObservable().pipe(distinctUntilChanged());
+    public readonly budgetTotal = this._budgetTotal.asObservable().pipe(distinctUntilChanged());
     public readonly summaryTransactions = this._summaryTransactionsSubject.asObservable();
 
     constructor(
@@ -72,7 +74,7 @@ export class DashService implements OnDestroy {
         const bp = new BudgetPeriod(period);
         this._budgetPeriodSubject.next(bp);
         this.setSelectedPeriod(period);
-        return Observable.of(bp);
+        return observableOf(bp);
     }
 
     getSelectedPeriod(): Period {

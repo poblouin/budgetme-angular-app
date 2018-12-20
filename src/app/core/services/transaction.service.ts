@@ -2,6 +2,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 
 import { BehaviorSubject ,  SubscriptionLike as ISubscription ,  Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
+import * as _ from 'lodash';
 import * as moment from 'moment';
 
 import { ApiService } from '../../shared/services/api.service';
@@ -26,8 +28,8 @@ export class TransactionService implements OnDestroy {
         private transactionCategoryService: TransactionCategoryService,
         private budgetMeToastrService: BudgetMeToastrService
     ) {
-        this.subscriptions.push(this.transactionCategoryService.transactionCategories
-            .filter(tcs => tcs.size > 0)
+        this.subscriptions.push(this.transactionCategoryService.transactionCategories.pipe(
+            filter(tcs => tcs.size > 0))
             .subscribe(
                 tcs => {
                     const arr = new Array<TransactionCategory>();
@@ -58,7 +60,7 @@ export class TransactionService implements OnDestroy {
                 }
             });
 
-            return this.apiService.get(API_PATH, params).map(
+            return this.apiService.get(API_PATH, params).pipe(map(
                 data => {
                     const transactions = data.transactions;
                     const transactionFilterCat = new Map<string, Array<Transaction>>();
@@ -83,7 +85,7 @@ export class TransactionService implements OnDestroy {
                     this._transactionSubject.next(transactionFilterCat);
                     return transactionFilterCat;
                 }
-            );
+            ));
         } else {
             return this.transactions;
         }
@@ -105,7 +107,7 @@ export class TransactionService implements OnDestroy {
     }
 
     createTransaction(newTransaction: Transaction, periodStart: string, periodEnd: string): Observable<Transaction> {
-        return this.apiService.post(API_PATH, newTransaction).map(
+        return this.apiService.post(API_PATH, newTransaction).pipe(map(
             data => {
                 const transactionCategory = this.transactionCategories.find(tc => tc.id === data.transaction.transaction_category.id);
                 const transaction = new Transaction(data.transaction, transactionCategory);
@@ -119,7 +121,7 @@ export class TransactionService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction created');
                 return transaction;
             }
-        );
+        ));
     }
 
     updateTransaction(
@@ -128,7 +130,7 @@ export class TransactionService implements OnDestroy {
         periodStart: string,
         periodEnd: string
     ): Observable<Transaction> {
-        return this.apiService.put(`${API_PATH}/${updateTransaction.id}`, updateTransaction).map(
+        return this.apiService.put(`${API_PATH}/${updateTransaction.id}`, updateTransaction).pipe(map(
             data => {
                 const transactionCategory = this.transactionCategories.find(tc => tc.id === data.transaction.transaction_category.id);
                 const transaction = new Transaction(data.transaction, transactionCategory);
@@ -159,11 +161,11 @@ export class TransactionService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction updated');
                 return transaction;
             }
-        );
+        ));
     }
 
     deleteTransaction(deleteTransaction: any, periodStart: string, periodEnd: string): Observable<Transaction> {
-        return this.apiService.delete(API_PATH + `/${deleteTransaction.id}`).map(
+        return this.apiService.delete(API_PATH + `/${deleteTransaction.id}`).pipe(map(
             data => {
                 if (!this.isOutsidePeriod(deleteTransaction.date, periodStart, periodEnd)) {
                     const budgetName = deleteTransaction.transaction_category.budget.name;
@@ -175,7 +177,7 @@ export class TransactionService implements OnDestroy {
                 this.budgetMeToastrService.showSuccess('Transaction deleted');
                 return data;
             }
-        );
+        ));
     }
 
     private updateTransactionCache(key: string, transaction: Transaction): void {

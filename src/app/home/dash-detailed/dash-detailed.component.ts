@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { SubscriptionLike as ISubscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
 
 import { BudgetService } from 'app/core/services/budget.service';
 import { Budget } from 'app/core/models/budget';
 import { DashService } from 'app/core';
 import { PeriodEnum } from '../../shared/types';
 import { BudgetFrequencyEnum } from '../../core/models/budget';
-import { NgSwitchCase } from '@angular/common';
 
 @Component({
     selector: 'dash-detailed',
@@ -29,15 +29,16 @@ export class DashDetailedComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscriptions.push(this.dashService.summaryTransactions
-            .filter(summaryTransactions => summaryTransactions.size > 0)
-            .switchMap(
-                summaryTransactions => {
-                    this.summaryTransactions = summaryTransactions;
-                    return this.budgetService.budgets;
-                }
-            )
-            .filter(budgets => budgets.length > 0)
-            .subscribe(
+            .pipe(
+                filter(summaryTransactions => summaryTransactions.size > 0),
+                switchMap(
+                    summaryTransactions => {
+                        this.summaryTransactions = summaryTransactions;
+                        return this.budgetService.budgets;
+                    }
+                ),
+                filter(budgets => budgets.length > 0)
+            ).subscribe(
                 budgets => {
                     this.budgets = budgets;
                     this.refreshBudgetCards();
