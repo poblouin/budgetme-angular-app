@@ -1,0 +1,18 @@
+version: '3.3'
+ 
+services:
+  client:
+      build: 
+        context: ./
+        dockerfile: ./.docker/node/Dockerfile
+      ports:
+        - '4200'
+        - '49153:49153'
+      volumes:
+        - .:/usr/src/app/
+  nginx:
+    build: ./.docker/nginx
+    ports:
+      - "80:80"
+    links:
+      - client
